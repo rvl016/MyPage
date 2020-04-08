@@ -1,0 +1,31 @@
+<mat-toolbar class="mat-elevation-z8">
+    <span><img src="/assets/images/logo.png" height=40></span>
+    <a mat-button routerLink = "/home" routerLinkActive = 'active'><span class="fa fa-home fa-lg"></span> Home</a>
+    <a mat-button><span class="fa fa-info fa-lg"></span> About Me</a>
+    <a mat-button><span class="fa fa-code fa-lg"></span> Projects</a>
+    <a mat-button><span class="fa fa-gear fa-lg fa-spin-hover"></span> Utilities</a>
+    <a mat-button routerLink = "/games" routerLinkActive = 'active'><span class="fa fa-gamepad fa-lg"></span> Inutilities</a>	
+    <a mat-button routerLink = "/intro" routerLinkActive = 'active'><span class="fa fa-list fa-lg"></span> Bricks</a>
+    <a mat-button routerLink = "/contact" routerLinkActive = 'active'><span class="fa fa-address-card fa-lg"></span> Contact</a>
+    <span class = "flex-spacer"></span>
+    <a mat-button (click) = "openFeedbackForm()"><span class = "fa fa-paper-plane fa-lg"></span> Feedback</a>
+</mat-toolbar>
+  
+<div class="container jumbotron"
+    fxLayout="row"
+    fxLayout.sm="column" 
+    fxLayout.xs="column" 
+    fxLayoutAlign.xs="start center"
+    fxLayoutAlign.sm="start center" 
+    fxLayoutAlign.gt-sm="center center" 
+    fxLayoutGap="10px">
+
+  <div fxFlex fxFlex.gt-sm="50%">
+    <h1>Ravi do Valle Luz</h1>
+    <p>Welcome to my webpage, I hope you have some fun knowing my work!</p>
+  </div>
+  <div fxFlex fxFlex.lt-sm="20%">
+    <img src="/assets/images/logo.png" alt="Logo">
+  </div>
+  <div fxFlex></div>
+</div>

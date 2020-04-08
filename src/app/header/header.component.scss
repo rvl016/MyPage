@@ -1,0 +1,36 @@
+$lt-gray: #ddd;
+$background-dark: #AE2D68;
+$background-light: #AE2D68;
+$background-pale: #512b58;
+$background-darker: #9E1D58;
+
+@mixin zero-margin($pad-up-down, $pad-left-right) {
+    margin: 0px auto;
+    padding: $pad-up-down $pad-left-right;
+}
+
+.jumbotron {
+    @include zero-margin(70px,30px);
+    background: $background-pale;
+    color:floralwhite;
+    min-height: 100px;
+}
+
+.mat-toolbar {
+    background-color : $background-light;
+    color : $lt-gray;
+    position : fixed; 
+    z-index : 3;
+}
+
+.active {
+    background-color: $background-darker;
+}
+
+.fa-spin-hover:hover {
+    -webkit-animation: fa-spin 2s infinite linear;
+    -moz-animation: fa-spin 2s infinite linear;
+    -o-animation: fa-spin 2s infinite linear;
+    animation: fa-spin 2s infinite linear;
+}
+

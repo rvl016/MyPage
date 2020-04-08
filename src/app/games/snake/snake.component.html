@@ -1,0 +1,34 @@
+
+<mat-grid-list id = "grid" cols = "4" rowHeight = "4.5:1">
+    <mat-grid-tile colspan = "1" rowspan = "1">
+        <h1>Snake</h1>
+    </mat-grid-tile>
+    <mat-grid-tile colspan = "1" rowspan = "1">
+        <div *ngIf = "! gameIsRunning" fxFlex = "20%">
+            <button mat-button (click) = "OnPlay()" class = "play-button">Play!</button>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan = "1" rowspan = "1">
+        <p>Score: {{ score }}</p>
+    </mat-grid-tile>
+    <mat-grid-tile colspan = "1" rowspan = "1">
+        <p>High Score: {{ highscore }}</p>
+    </mat-grid-tile>
+    <mat-grid-tile colspan = "4" rowspan = 
+            "8">
+        <div id = "canvas-container">
+            <canvas #board class = "game-board" 
+                height = "{{cROWS * cBLOCK_SIZE}}" 
+                width = "{{cCOLS * cBLOCK_SIZE}}"></canvas>
+        </div>
+    </mat-grid-tile>
+</mat-grid-list>
+
+<div style="padding : 50px;"> 
+    <h2>My approach</h2>
+    <p style="padding-left : 50px;">The snake is naturally divided into segments, so I made an abstract class <em>Segment</em> with <em>Head</em> and <em>Tail</em> extentions. Every <em>Segment</em> object has a <em>next</em> and a <em>previous</em> pointers to adjacent segments, so every tail segment just needs to get the coordinates of the next segment (towards the head) to know its future coordinates. The head is the exception here, for which the future coordinates depends upon the current its direction of movement.</p>
+    <p style="padding-left : 50px;">Every segment also has a <em>isGrowing</em> state, that whenever is true, sets the previous segment <em>isGrowing</em> to true and then turns itself to false. The exception is the very last tail segment, that finishes off the job calling a new <em>Tail</em> segment that is appended to the end of the snake. It is based in the <em>isGrowing</em> state that we can see the food flowing through the snake after it eats food.</p>
+    <p style="padding-left : 50px;">Then came the disadvantage of this approach: whenever the head of the snake moves, we have to check if any collision towards itself happend. For that, we have to recurse through all snake tail finding if the head coordinates matches any of the tail coordinates. This means that as the snake grows, the overhead grows lineary. If a matrix approach were used, we would just check if the coordinates for which the head is moving to is already occupied in the matrix.</p>
+    <p style="padding-left: 50px;">Finally, the snake can't turn back to itself, for that I just check if the new direction that the user is taking does not leads the head to its adjacent segment.</p>
+
+</div>

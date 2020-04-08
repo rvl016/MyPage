@@ -1,0 +1,35 @@
+<div class="container"
+     fxLayout="row"
+     fxLayout.sm="column"
+     fxLayout.xs="column"
+     fxLayoutAlign="space-around center"
+     fxLayoutGap="20px">
+
+    <mat-card *ngIf="brick" fxFlex>
+    <mat-card-header>
+        <div mat-card-avatar></div>
+        <mat-card-title>
+        <h3>{{brick.name | uppercase}}</h3>
+        </mat-card-title>
+    </mat-card-header>
+    <img mat-card-image src={{brick.image}} alt={{brick.name}}>
+    <mat-card-content>
+        <p>{{brick.description}}</p>
+    </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="featuredProject" fxFlex>
+    <mat-card-header>
+        <div mat-card-avatar></div>
+        <mat-card-title>
+        <h3>{{featuredProject.name | uppercase}}</h3>
+        </mat-card-title>
+    </mat-card-header>
+    <img mat-card-image src={{featuredProject.image}} alt={{featuredProject.name}}>
+    <mat-card-content>
+        <p>{{featuredProject.description}}
+        </p>
+    </mat-card-content>
+    </mat-card>
+
+</div>

@@ -1,0 +1,53 @@
+<mat-toolbar color = "primary">
+  Give me a feedback!
+  <span class = "flex-spacer"></span>
+  <button mat-button mat-dialog-close>&times;</button>
+</mat-toolbar>
+
+<!-- <p>{{ feedbackForm.value | json }} {{ feedbackForm.status | json }}</p> -->
+
+<br>
+<form novalidate [formGroup] = "feedbackForm" 
+  (ngSubmit) = "onSubmit()" #fform = "ngForm">
+  <mat-dialog-content>
+      <mat-form-field class = "half-width">
+        <input matInput formControlName = "name" 
+          placeholder = "Your Name" type = "text" required>
+          <mat-error *ngIf = "feedbackForm.get( 'name').hasError('required') && feedbackForm.get('name').touched">
+            Name is required
+          </mat-error>
+      </mat-form-field>
+      <mat-form-field class = "full-width">
+        <textarea matInput formControlName = "message"
+          placeholder = "Type your feedback here" type = "text"
+          rows = 10 class = "full-width"></textarea>
+      </mat-form-field>
+      <mat-select class = "quarter-width" placeholder = "Rate this content" formControlName = "rating" required> 
+        <mat-option *ngFor = "let i of rating" [value] = "i"> 
+          <div *ngIf = "i > 1; else elseblock">
+            {{ i }} Stars
+          </div>
+          <ng-template #elseblock>
+            {{ i }} Star
+          </ng-template>
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf = "feedbackForm.get( 'rating').hasError('required') && feedbackForm.get('rating').touched">
+        Please, give this content a rating.
+      </mat-error>
+  </mat-dialog-content>
+  <br>
+  <mat-dialog-actions>
+    <span class = "flex-spacer"></span>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button type = "submit" class = 
+      "background-primary text-floral-white" [disabled] = 
+      "feedbackForm.invalid">Submit!</button>
+  </mat-dialog-actions>
+</form> 
+
+<!-- <mat-form-field>
+  <star-rating value="5" totalstars="5" checkedcolor="red" 
+    uncheckedcolor="black" size="24px" readonly="false" 
+    (rate)="onRate($event)"></star-rating>
+</mat-form-field> -->

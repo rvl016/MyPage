@@ -1,0 +1,23 @@
+<div class = "container"
+  fxLayout = "column"
+  fxLayoutGap = "25px">
+
+  <div fxFlex>
+    <div>
+      <h3>Let's play some games?</h3>
+      <hr>
+    </div>
+  </div>
+
+  <div fxFlex>
+    <mat-grid-list cols = "4" rowHeight = "200px">
+      <mat-grid-tile *ngFor = "let game of games" 
+        [routerLink] = "['/games', game.name]">
+        <img height = "200px" src = {{game.image}} alt = {{game.name}}>
+        <mat-grid-tile-footer>
+          <h1 matLine> {{game.name | uppercase}} </h1>
+        </mat-grid-tile-footer>
+      </mat-grid-tile>"
+    </mat-grid-list>
+  </div>
+</div>

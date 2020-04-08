@@ -1,0 +1,23 @@
+<div class = "container"
+     fxLayout = "column"
+     fxLayoutGap = "25px">
+
+  <div fxFlex>
+    <div>
+      <h3>How to get here?</h3>
+      <hr>
+    </div>
+  </div>  
+  
+  <div fxFlex>
+    <mat-grid-list cols = "4" rowHeight = "200px">
+      <mat-grid-tile *ngFor = "let brick of bricks" 
+        [routerLink] = "['/introdetail',brick.id]">
+        <img height = "200px" src = {{brick.image}} alt = {{brick.name}}>
+        <mat-grid-tile-footer>
+            <h1 matLine> {{brick.name | uppercase}} </h1>
+        </mat-grid-tile-footer>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>
