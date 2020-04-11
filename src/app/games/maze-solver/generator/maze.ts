@@ -1,5 +1,5 @@
 import { AppInterface } from '../interface/appInterface';
-import { PATHFIELD, VISITFIELD } from '../definitions/defs';
+import { PATHFIELD, VISITFIELD, ISGOAL, ISSTART, PATHFOUNDFIELD } from '../definitions/defs';
 
 export class Maze {
 
@@ -31,39 +31,63 @@ export class Maze {
         this.maze = new Array( rows).fill( Array( cols).fill( null)).map( func);
     }
 
-    makeMaze( func : (maze : Cell[][], xInit : number, yInit : number) => void, 
+    resetMaze() {
+        this.maze.map( row => {
+            row.map( cell => {
+                cell.setDefaults();
+                cell.walls.map( wall => {
+                    wall.setDefaults();
+                });
+            });
+        });
+    }
+
+    runAlgorithm( func : (maze : Cell[][], xInit : number, yInit : number) => void, 
         xInit : number, yInit : number) {
-        setTimeout( func, 1000, this.maze, xInit, yInit);
+        func( this.maze, xInit, yInit);
     } 
 
     wallNotify( left : Cell, right : Cell, state : boolean) {
-        this.appInterface.setWall( left.getX() + right.getX(), 
-            left.getY() + right.getY(), state);
+        this.appInterface.setWall( left.x + right.x, 
+            left.y + right.y, state);
     }
 
     cellNotify( x : number, y : number, type : number, state : boolean) {
         this.appInterface.setCell( x, y, type, state);
     }
+
+    setCellState( x : number, y : number, field : number, targState : number) {
+        if (field == ISSTART || field == ISGOAL)
+            this.maze[y][x].setTarget( targState);
+        else if (field == PATHFIELD)
+            this.maze[y][x].setIsPath( targState != 0b0 ? true : false, false);
+    }
 }
 
 export class Cell {
 
-    private isStart : boolean;
-    private isGoal : boolean;
-    private isPath : boolean;
-    private visited : boolean;
-    private x : number;
-    private y : number;
+    private _isStart : boolean;
+    private _isGoal : boolean;
+    private _isPath : boolean;
+    private _visited : boolean;
+    private _foundPath : boolean;
+    private _x : number;
+    private _y : number;
     public walls : Wall[];
     private maze : Maze;
 
-    constructor( x : number, y : number, maze : Maze, isPath : boolean = false) {
-        this.x = x;
-        this.y = y;
+    constructor( x : number, y : number, maze : Maze) {
+        this._x = x;
+        this._y = y;
         this.maze = maze;
         this.walls = new Array<Wall>();
-        this.setVisited( false);
-        this.setIsPath( isPath);
+        this.setDefaults();
+    }
+
+    setDefaults() {
+        this.visited = false;
+        this.setIsPath( false);
+        this.foundPath = false;
     }
 
     setNeighbor( other : Cell) {
@@ -72,30 +96,48 @@ export class Cell {
         other.walls.push( wall);
     }
 
-    getVisited() {
-        return this.visited;
+    get visited() {
+        return this._visited;
     }
 
-    getIsPath() {
-        return this.isPath;
-    }
-
-    setIsPath( state : boolean) {
-        this.isPath = state;
-        this.maze.cellNotify( this.x, this.y, PATHFIELD, state);
-    } 
-
-    setVisited( state : boolean) {
-        this.visited = state;
+    set visited( state : boolean) {
+        this._visited = state;
         this.maze.cellNotify( this.x, this.y, VISITFIELD, state);
     }
 
-    getX() {
-        return this.x;
+    get isPath() {
+        return this._isPath;
     }
 
-    getY() {
-        return this.y;
+    setIsPath( state : boolean, notify : boolean = true) {
+        this._isPath = state;
+        if (! notify)
+            this.walls.map( _ => _.standing = ! state);
+        else
+            this.maze.cellNotify( this.x, this.y, PATHFIELD, state);
+    } 
+
+    get isGoal() {
+        return this._isGoal;
+    }
+
+    set foundPath( state : boolean) {
+        this._foundPath = state;
+        this.maze.cellNotify( this.x, this.y, PATHFOUNDFIELD, state);
+    }
+
+    setTarget( state : number) {
+        this._isGoal = (ISGOAL & state) == ISGOAL ? true : false;
+        this._isStart = (ISSTART & state) == ISSTART ? true : false;
+    }
+
+
+    get x() {
+        return this._x;
+    }
+
+    get y() {
+        return this._y;
     }
 }
 
@@ -110,22 +152,26 @@ export class Wall {
         this.leftCell = left;
         this.rightCell = right;
         this.maze = maze;
-        this.setStanding( true);
+        this.setDefaults();
     }
 
-    getLeft() : Cell {
+    setDefaults() {
+        this.standing = true;
+    }
+
+    get left() : Cell {
         return this.leftCell;
     }
 
-    getRight() : Cell {
+    get right() : Cell {
         return this.rightCell;
     }
 
-    getStanding() : boolean {
+    get standing() : boolean {
         return this.isStanding;
     }
 
-    setStanding( state : boolean) {
+    set standing( state : boolean) {
         this.isStanding = state;
         this.maze.wallNotify( this.leftCell, this.rightCell, state);
     }

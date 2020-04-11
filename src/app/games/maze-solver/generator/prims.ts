@@ -1,50 +1,41 @@
 import { Cell, Wall } from './maze';
+import { AppInterface } from '../interface/appInterface';
 
-export function prim( maze : Cell[][], xInit : number, yInit : number) {
-    const initCell = maze[yInit][xInit];
-    var wallList = [];
-    wallList = wallList.concat( initCell.walls);
-    initCell.setIsPath( true);
-    
-    const getNewCell = ( wall) => {
-        if (wall.getLeft().getIsPath() && wall.getRight().getIsPath()) 
-            return null;
-        if (! wall.getLeft().getIsPath()) {
-            return wall.getLeft();
+export const prim = (appInterface : AppInterface) =>
+    async ( maze : Cell[][], xInit : number, yInit : number) => {
+        const initCell = maze[yInit][xInit];
+        var wallList = [];
+        wallList = wallList.concat( initCell.walls);
+        initCell.setIsPath( true);
+        
+        const getNewCell = ( wall) => {
+            if (wall.left.isPath && wall.right.isPath) 
+                return null;
+            if (! wall.left.isPath) 
+                return wall.left;
+            return wall.right;
         }
-        return wall.getRight();
+
+        const loop = () => { return new Promise( (resolve) => {
+            setTimeout( async resolve => {
+                if (wallList.length == 0)
+                    return resolve();
+                const len = wallList.length;
+                const wallIdx = Math.floor( Math.random() * len); 
+
+                const wall = wallList.splice( wallIdx, 1)[0];
+                
+                const cell = getNewCell( wall);
+                if (cell) {
+                    wall.standing = false;
+                    cell.setIsPath( true);
+                    wallList = wallList.concat( cell.walls);
+                }
+                await loop();
+                resolve();
+            }, appInterface.eventHandlerInterval, resolve);
+        })};
+
+        await loop();
+        appInterface.signalAlgorithmEnd();
     }
-/*     while (wallList.length > 0) {
-        const len = wallList.length;
-        const wallIdx = Math.floor( Math.random() * len); 
-
-        const wall = wallList.splice( wallIdx, 1)[0];
-        
-
-        const cell = getNewCell( wall);
-        if (cell) {
-            wall.setStanding( false);
-            cell.setIsPath( true);
-            wallList = wallList.concat( cell.walls);
-        }
-    } */
-        
-    var loop = setInterval( () => {
-        if (wallList.length == 0) {
-            clearInterval( loop);
-            return;
-        }
-        const len = wallList.length;
-        const wallIdx = Math.floor( Math.random() * len); 
-
-        const wall = wallList.splice( wallIdx, 1)[0];
-        
-
-        const cell = getNewCell( wall);
-        if (cell) {
-            wall.setStanding( false);
-            cell.setIsPath( true);
-            wallList = wallList.concat( cell.walls);
-        }
-    }, 10);
-}
