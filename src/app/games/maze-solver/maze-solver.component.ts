@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, ViewChild, HostListener, ElementRef } from '@angular/core';
 import * as PIXI from 'pixi.js';
-import { AppInterface } from './interface/appInterface';
+import { AppInterface } from './interface/appInterface'; 
 import * as consts from './definitions/defs';
 
 
@@ -13,8 +13,9 @@ import * as consts from './definitions/defs';
 
 export class MazeSolverComponent implements AfterViewInit {
 
-  public pApp : any;
+  public pApp : PIXI.Application;
   public container : any;
+  public mainContainer : PIXI.Container;
   public appInterface : AppInterface;
   public pixiParams : Object;
 
@@ -26,15 +27,17 @@ export class MazeSolverComponent implements AfterViewInit {
   }
 
   constructor() { 
-    this.pixiParams = { width : 400, height : 420, 
+    this.pixiParams = { width : 600, height : 620, 
       backgroundColor: consts.BACKGROUNDCOL, antialias: true }
   }
 
   ngAfterViewInit(): void {
     this.pApp = new PIXI.Application( this.pixiParams);
     this.pixiContainer.nativeElement.appendChild( this.pApp.view);
-    this.appInterface = new AppInterface( 20, 20, 20, 400, 420, this.pApp);
-    this.appInterface.mazeInit();
+    this.mainContainer = new PIXI.Container();
+    this.pApp.stage.addChild( this.mainContainer);
+
+    this.appInterface = new AppInterface( 30, 30, 20, this.mainContainer);
 
   }
 

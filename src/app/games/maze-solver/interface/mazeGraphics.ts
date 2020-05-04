@@ -1,31 +1,26 @@
 import { AppInterface } from './appInterface';
 import * as consts from '../definitions/defs';
+import * as PIXI from 'pixi.js';
 
 export class PixiBox {
-    private alphaFilter : any;
-    protected ticker : any;
-    public set : boolean;
 
-    alphaFade( pixiElem : any, alphaStart : number, alphaEnd : number, 
-        dAlpha : number, funcMiddle : Function = null, funcEnd : Function = null) {
-        let alpha = alphaStart;
-        const loop = () => {
-            alpha += dAlpha;
-            pixiElem.alpha = alpha;
-            if ((alphaEnd > alphaStart && alpha >= alphaEnd) || 
-                (alphaEnd < alphaStart && alpha <= alphaEnd)) {
-                if (funcMiddle) {
-                    funcMiddle();
-                    funcEnd();
-                }
-                return;
-            }
+    alphaFade = ( pixiElem : any, alphaStart : number, 
+        alphaEnd : number, dAlpha : number) => {
+        return new Promise( (resolve) => {
+            let alpha = alphaStart;
+            const loop = () => {
+                alpha += dAlpha;
+                pixiElem.alpha = alpha;
+                if ((alphaEnd > alphaStart && alpha >= alphaEnd) || 
+                    (alphaEnd < alphaStart && alpha <= alphaEnd)) 
+                    return resolve();
+                requestAnimationFrame( loop);
+            };
             requestAnimationFrame( loop);
-        };
-        requestAnimationFrame( loop);
-    }
+        });
+    };
 
-    toggleDim( pixiElem : any) {
+    toggleDim( pixiElem : PIXI.Graphics) {
         if (pixiElem.tint == consts.BASELINEDIM)
             pixiElem.tint = consts.DIMVAL;
         else 
@@ -34,69 +29,73 @@ export class PixiBox {
 
 }
 
-abstract class Element {
+abstract class Element extends PIXI.Graphics {
 
-    protected _x : number;
-    protected _y : number;
-    protected _state : number;
+    protected _j : number;
+    protected _i : number;
+    protected _state_ : number;
     protected blockSize : number;
-    protected pixiElem : any;
     protected pixiBox : any;
-    protected context : any;
-    protected drawShape : Function;
+    protected mazeContainer : PIXI.Container;
+    protected draw : Function;
     protected state2col : Function;
 
-    constructor( x : number, y : number, blockSize : number, 
-        context : any, pixiBox : any) {
-        this._x = x;
-        this._y = y;
+    constructor( j : number, i : number, blockSize : number, 
+        mazeContainer : PIXI.Container, pixiBox : PixiBox) {
+        super();
+        this._j = j;
+        this._i = i;
         this.blockSize = blockSize;
-        this._state = 0b0;
-        this.context = context;
+        this._state_ = 0b0;
+        this.mazeContainer = mazeContainer;
         this.pixiBox = pixiBox;
-        this.pixiElem = new PIXI.Graphics();
-        this.context.stage.addChild( this.pixiElem);
+        this.mazeContainer.addChild( this);
         this.mkShapeFunc();
         this.mkState2colFunc();
-        this.render( this.state, null);
+        this.update( null, this._state_);
     }
     
-    get x() {
-        return this._x;
+    get j() {
+        return this._j;
     }
 
-    get y() {
-        return this._y;
+    get i() {
+        return this._i;
     }
     
-    get state() {
-        return this._state;
+    get state_() {
+        return this._state_;
+    }
+
+    async flash( type : number) {
+        this.fillCycle( consts.cellFlash2col( type), 1);
+        await this.pixiBox.alphaFade( this, 1, 0, -.1, null, null);
+        this.fillCycle( this.state2col( this.state_), 1);
     }
 
     setState( type : number, state : number) {
-        const newState = (this.state & ~type) | (type * state);
-        this.render( type, newState);
-        this._state = newState;
+        const newState = (this.state_ & ~type) | (type * state);
+        this.update( type, newState);
+        this._state_ = newState;
     }
 
     fillCycle( color : number, alpha : number) {
-        this.pixiElem.clear();
-        this.pixiElem.beginFill( color);
-        this.pixiElem.alpha = alpha;
-        this.drawShape();
-        this.pixiElem.endFill();
+        this.clear();
+        this.beginFill( color);
+        this.alpha = alpha;
+        this.draw();
+        this.endFill();
     }
 
-    render( type : number, newState : number) {
-        
-        if (this.state == newState) 
+    async update( type : number, newState : number) {
+        if (this._state_ == newState) 
             this.fillCycle( this.state2col( newState), 1);
         else {
             if (type == consts.PATHFIELD && newState == 0b1) 
                 this.fillCycle( consts.NEWPATHCOL, 1);
-            this.pixiBox.alphaFade( this.pixiElem, 1, 0, -0.1, 
-                () => this.fillCycle( this.state2col( newState), 0),
-                () => this.pixiBox.alphaFade( this.pixiElem, 0, 1, 0.1)); 
+            await this.pixiBox.alphaFade( this, 1, 0, -0.1); 
+            this.fillCycle( this.state2col( newState), 0),
+            await this.pixiBox.alphaFade( this, 0, 1, 0.1); 
         } 
     }
 
@@ -108,22 +107,23 @@ export class CellElement extends Element {
 
     private appInterface : AppInterface;
 
-    constructor( x : number, y : number, blockSize : number, 
-        context : any, pixiBox : any, appInterface : AppInterface) {
-        super(x, y, blockSize, context, pixiBox);
+    constructor( j : number, i : number, blockSize : number, 
+        mazeContainer : PIXI.Container, pixiBox : PixiBox, 
+        appInterface : AppInterface) {
+        super( j, i, blockSize, mazeContainer, pixiBox);
         this.appInterface = appInterface;
-        this.pixiElem.tint = consts.BASELINEDIM;
-        this.pixiElem.interactive = true;
-        this.pixiElem.on( 'mousedown', ( e) => this.onLeftClick( this));
-        this.pixiElem.on( 'rightdown', ( e) => this.onRightClick( this));
-        this.pixiElem.on( 'pointerover', ( e) => this.pixiBox.toggleDim( this.pixiElem));
-        this.pixiElem.on( 'pointerout', ( e) => this.pixiBox.toggleDim( this.pixiElem));
+        this.tint = consts.BASELINEDIM;
+        this.interactive = true;
+        this.on( 'mousedown', ( e) => this.onLeftClick());
+        this.on( 'rightdown', ( e) => this.onRightClick());
+        this.on( 'pointerover', ( e) => this.pixiBox.toggleDim( this));
+        this.on( 'pointerout', ( e) => this.pixiBox.toggleDim( this));
     }
 
     mkShapeFunc() {
-        this.drawShape = () => {
-            this.pixiElem.drawRect( this.x * this.blockSize, 
-            this.y * this.blockSize, this.blockSize, this.blockSize);
+        this.draw = () => {
+            this.drawRect( this.j * this.blockSize, 
+            this.i * this.blockSize, this.blockSize, this.blockSize);
         }
     }
 
@@ -132,46 +132,45 @@ export class CellElement extends Element {
     }
 
     commitEvent( field : number, targState : number) {
-        const newState = (this.state & ~ field) | targState;
-        if (! this.appInterface.echoElementState( this.x, this.y, field, targState))
+        const newState = (this._state_ & ~ field) | targState;
+        if (! this.appInterface.echoElementState( this.j, this.i, field, targState))
             return;
         this.setState( field, (field & targState) != 0b0 ? 1 : 0);
     }
 
 
-    onLeftClick( cell : CellElement) {
+    onLeftClick() {
         var targState;
         var field;
-        if ((cell.appInterface.state & consts.SEARCHINGMAZE) != 0b0 &&
-            (cell.state & consts.VISITFIELD) == 0b0) {
+        if ((this.appInterface.state & consts.SEARCHINGMAZE) != 0b0 &&
+            (this._state_ & consts.VISITFIELD) == 0b0) {
             field = consts.PATHFIELD;
-            targState = (~ (cell.state & field)) & field;
-            console.log( "HERE!");
-            cell.commitEvent( field, targState);
+            targState = (~ (this._state_ & field)) & field;
+            this.commitEvent( field, targState);
         }
-        else if ((cell.appInterface.state & consts.MAZEREADY) != 0b0) {
-            if ((cell.state & consts.ISGOAL) != 0b0)
+        else if ((this.appInterface.state & consts.MAZEREADY) != 0b0) {
+            if ((this._state_ & consts.ISGOAL) != 0b0)
                 return;
             field = consts.ISSTART;
-            targState = (~ (cell.state & field)) & consts.ISSTART;
-            cell.commitEvent( field, targState);
+            targState = (~ (this._state_ & field)) & consts.ISSTART;
+            this.commitEvent( field, targState);
         }
-        else if ((cell.appInterface.state & consts.EMPTYMAZE) != 0b0) {
+        else if ((this.appInterface.state & consts.EMPTYMAZE) != 0b0) {
             field = consts.ISSTART;
-            targState = (~ (cell.state & field)) & field;
-            cell.commitEvent( field, targState);
+            targState = (~ (this._state_ & field)) & field;
+            this.commitEvent( field, targState);
         }
     }
 
-    onRightClick( cell : CellElement) {
+    onRightClick() {
         var targState;
         var field;
-        if ((cell.appInterface.state & consts.MAZEREADY) != 0b0) {
-            if ((cell.state & consts.ISSTART) != 0b0)
+        if ((this.appInterface.state & consts.MAZEREADY) != 0b0) {
+            if ((this._state_ & consts.ISSTART) != 0b0)
                 return;
             field = consts.ISGOAL;
-            targState = (~ (cell.state & field)) & consts.ISGOAL;
-            cell.commitEvent( field, targState);
+            targState = (~ (this._state_ & field)) & consts.ISGOAL;
+            this.commitEvent( field, targState);
         }
     }
 
@@ -179,23 +178,23 @@ export class CellElement extends Element {
 
 export class WallElement extends Element {
 
-    constructor( x : number, y : number, blockSize : number, 
-        context : any, pixiBox : any) {
-        super(x, y, blockSize, context, pixiBox);
+    constructor( j : number, i : number, blockSize : number, 
+        mazeContainer : PIXI.Container, pixiBox : PixiBox) {
+        super( j, i, blockSize, mazeContainer, pixiBox);
     }
 
     mkShapeFunc() {
-        if (this.x % 2 == 0)
-            this.drawShape = () => {
-                this.pixiElem.drawRect( this.x * this.blockSize / 2, 
-                    (this.y + 1) * this.blockSize / 2 - this.blockSize / 16, 
+        if (this.j % 2 == 0)
+            this.draw = () => {
+                this.drawRect( this.j * this.blockSize / 2, 
+                    (this.i + 1) * this.blockSize / 2 - this.blockSize / 16, 
                     this.blockSize, this.blockSize / 8);
             }
         else 
-            this.drawShape = () => {
-                this.pixiElem.drawRect( 
-                    (this.x + 1) * this.blockSize / 2 - this.blockSize / 16, 
-                    this.y * this.blockSize / 2,
+            this.draw = () => {
+                this.drawRect( 
+                    (this.j + 1) * this.blockSize / 2 - this.blockSize / 16, 
+                    this.i * this.blockSize / 2,
                     this.blockSize / 8, this.blockSize);
             }
     }

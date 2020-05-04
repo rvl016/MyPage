@@ -1,19 +1,18 @@
 import { Maze, Cell } from '../generator/maze';
 import * as PIXI from 'pixi.js';
 import * as consts from '../definitions/defs';
-import { prim } from '../generator/prims';
-import { dfs } from '../solver/dfs';
 import { CellElement, WallElement, PixiBox } from './mazeGraphics';
 import { MazeBar } from './contextBar';
 
 export class AppInterface {
 
-    private context : any;
-    private pixiBox : any;
-    private contextUi : MazeBar;
+    private mainContainer : PIXI.Container;
+    private mazeContainer : PIXI.Container;
+    private mazeBar : MazeBar;
+    private pixiBox : PixiBox;
 
-    private eventHandlerQueue : Function[];
-    private _eventHandlerInterval : number;
+    public eventHandlerQueue : Function[];
+    public eventHandlerInterval : number;
 
     private maze : Maze;
     private rows : number;
@@ -29,21 +28,28 @@ export class AppInterface {
     private cellGrid : CellElement[][];
     private wallGrid : WallElement[][];
 
-    public algorithm : (appInterface : AppInterface) => (maze : Cell[][], xInit : number, yInit : number) => void;
+    public algorithm : (appInterface : AppInterface) => (maze : Cell[][], 
+        xInit : number, yInit : number) => void;
 
-    constructor( cols : number, rows : number, blockSize : number, deltaX : number,
-        deltaY : number, context : any) {
-        this.context = context;
+    constructor( cols : number, rows : number, blockSize : number, 
+         mainContainer : PIXI.Container) {
+        this.mainContainer = mainContainer;
         this.pixiBox = new PixiBox();
         this.blockSize = blockSize;
         this.cols = cols;
         this.rows = rows;
-        this.deltaX = deltaX;
-        this.deltaY = deltaY;
         this.startCell = null;
         this.goalCell = null;
+
+        this.mazeContainer = new PIXI.Container();
+        this.mainContainer.addChild( this.mazeContainer);
+        
+        this.mazeBar = new MazeBar( this.blockSize * this.rows, 
+            this.blockSize * this.cols, 20, this, this.mainContainer, 
+            this.pixiBox);
+
         this.eventHandlerQueue = [];
-        this._eventHandlerInterval = consts.EVENTHANDLERONBOOT;
+        this.eventHandlerInterval = consts.EVENTHANDLERONBOOT;
 
         this.bootEventHandler();
         this.buildGridUI();
@@ -52,7 +58,7 @@ export class AppInterface {
     }
 
     private bootEventHandler() {
-        const loop = ( timeout) => setTimeout( () => {
+        const loop = timeout => setTimeout( () => {
             const func = this.eventHandlerQueue.shift();
             if (func) {
                 func();
@@ -62,17 +68,13 @@ export class AppInterface {
         loop( this.eventHandlerInterval);
     }
 
-    get eventHandlerInterval() {
-        return this._eventHandlerInterval
-    }
-
 
     private buildGridUI() {
         this.cellGrid = Array( this.rows).fill( Array( this.cols).fill( null));
         this.cellGrid = this.cellGrid.map( (row, y) => { 
             return row.map( (elem, x) => {
-                return new CellElement( x, y, this.blockSize, this.context, 
-                    this.pixiBox, this);
+                return new CellElement( x, y, this.blockSize, 
+                    this.mazeContainer, this.pixiBox, this);
             });
         });
         this.wallGrid = Array( 2 * this.rows - 1).fill( 
@@ -80,8 +82,8 @@ export class AppInterface {
         this.wallGrid = this.wallGrid.map( (row, y) => { 
             return row.map( (elem, x) => {
                 if ((y % 2 == 0 && x % 2 == 1) || (y % 2 == 1 && x % 2 == 0))
-                    return new WallElement( x, y, this.blockSize, this.context, 
-                        this.pixiBox);
+                    return new WallElement( x, y, this.blockSize, 
+                        this.mazeContainer, this.pixiBox);
                 return null;
             });
         });
@@ -93,45 +95,44 @@ export class AppInterface {
     }
 
     private setState( state : number) {
-        this._eventHandlerInterval = consts.state2eventTiming.get( state);
-        if (state == consts.EMPTYMAZE || state == consts.MAZEREADY)
-            this.eventHandlerQueue.push( () => this.contextUi = new MazeBar(
-                0, this.rows * this.blockSize, this.cols * this.blockSize, 
-                this.deltaY - this.rows * this.blockSize, 
-                state == consts.EMPTYMAZE ? consts.BUILD : consts.SEARCH,
-                 this, this.context,
-                this.pixiBox));
-        else if (state == consts.BUILDINGMAZE || state == consts.SEARCHINGMAZE)
-            this.contextUi.destroyBar();
+        this.eventHandlerInterval = consts.state2eventTiming.get( state);
+        this.mazeBar.echoContextChange( state);
         this._state = state;
     }
 
     public start() {
         this.setState( this.state == consts.EMPTYMAZE ? 
             consts.BUILDINGMAZE : consts.SEARCHINGMAZE);
-        this.maze.runAlgorithm( this.algorithm( this), this.startCell.x, 
-            this.startCell.y);
+        this.maze.runAlgorithm( this.algorithm( this), this.startCell.j, 
+            this.startCell.i);
     }
 
-    public signalAlgorithmEnd() {
+    public signalAlgorithmEnd( success : boolean = null) {
         this.setState( this.state == consts.BUILDINGMAZE ? 
             consts.MAZEREADY : consts.GAMEOVER);
     }
 
-    public setWall( x : number, y : number, state : boolean) { 
-        if (this.eventHandlerInterval > 0)
-            this.eventHandlerQueue.push( () => (this.wallGrid[y][x].setState( 
-                consts.STANDFIELD, state ? 1 : 0)));
+    private schedule( func : () => void, forceSchedule : boolean = false) {
+        if (forceSchedule || (this._state == consts.BUILDINGMAZE && 
+            this.eventHandlerInterval > 0))
+            this.eventHandlerQueue.push( func);
         else 
-            this.wallGrid[y][x].setState( consts.STANDFIELD, state ? 1 : 0);
+            func();
+    }
+
+    public setWall( x : number, y : number, state : boolean) { 
+        this.schedule( () => this.wallGrid[y][x].setState( consts.STANDFIELD,
+             state ? 1 : 0));
     } 
 
     public setCell( x : number, y : number, type : number, state : boolean) {
-        if (this.eventHandlerInterval > 0)
-            this.eventHandlerQueue.push( () => (this.cellGrid[y][x].setState( 
-                type, state ? 1 : 0)));
-        else 
-            this.cellGrid[y][x].setState( type, state ? 1 : 0);
+        this.schedule( () => this.cellGrid[y][x].setState( type, 
+            state ? 1 : 0), type == consts.PATHFOUNDFIELD && this._state == 
+            consts.SEARCHINGMAZE ? true : false);
+    }
+
+    public flashCell( x : number, y : number, type : number) {
+        this.schedule( () => this.cellGrid[y][x].flash( type));
     }
 
     public get state() {
@@ -141,28 +142,20 @@ export class AppInterface {
     public echoElementState( x : number, y : number, field : number, targState : number) {
         // Ugly ugly ugly....
         if (field == consts.ISSTART) {
-            if (targState == consts.ISSTART) {
-                if (this.startCell) {
-                    this.startCell.setState( field, 0b0);
-                    this.maze.setCellState( this.startCell.x, 
-                        this.startCell.y, field, 0b0);
-                }
-                this.startCell = this.cellGrid[y][x];
+            if (this.startCell) {
+                this.startCell.setState( field, 0b0);
+                this.maze.setCellState( this.startCell.x, 
+                    this.startCell.y, field, 0b0);
             }
-            else
-                this.startCell = null;
+            this.startCell = this.cellGrid[y][x];
         }
         else if (field == consts.ISGOAL) {
-            if (targState == consts.ISGOAL) {
-                if (this.goalCell) {
-                    this.goalCell.setState( field, 0b0);
-                    this.maze.setCellState( this.goalCell.x, this.goalCell.y, 
-                        field, 0b0);
-                }
-                this.goalCell = this.cellGrid[y][x];
+            if (this.goalCell) {
+                this.goalCell.setState( field, 0b0);
+                this.maze.setCellState( this.goalCell.x, this.goalCell.y, 
+                    field, 0b0);
             }
-            else
-                this.goalCell = null;
+            this.goalCell = this.cellGrid[y][x];
         }
         this.maze.setCellState( x, y, field, targState);
         return true;

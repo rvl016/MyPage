@@ -1,4 +1,5 @@
 import { Cell, Wall } from '../generator/maze';
+import { FLASHFORWARD, FLASHBACKWARD } from '../definitions/defs';
 import { AppInterface } from '../interface/appInterface';
 
 export const dfs = (appInterface : AppInterface) =>
@@ -12,25 +13,30 @@ export const dfs = (appInterface : AppInterface) =>
     }).filter( _ => { return ! _.visited;}); 
 
     const loop = ( cell) => {
-        var promise = new Promise( (resolve) => {
+        return new Promise( (resolve) => {
             setTimeout( async () => {
                 var newCells = filter( cell);
                 while (newCells.length > 0) {
                     const newCell = newCells.pop();
                     newCell.visited = true;
+                    newCell.flashCell( FLASHFORWARD);
                     if (newCell.isGoal || await loop( newCell)) {
                         cell.foundPath = true;
                         return resolve( true);
                     } 
                 }
-                return resolve( false);
+                setTimeout( () => {
+                    cell.flashCell( FLASHBACKWARD);
+                    return resolve( false);
+                }, appInterface.eventHandlerInterval / 2);
             }, appInterface.eventHandlerInterval);
         });
-        return promise;
     };
 
     const cell = maze[yInit][xInit];
     cell.visited = true;
-    await loop( cell);
-    appInterface.signalAlgorithmEnd();
+    const success = await loop( cell) == true ? true : false;
+
+    appInterface.eventHandlerQueue.push( () => 
+        appInterface.signalAlgorithmEnd( success));
 };

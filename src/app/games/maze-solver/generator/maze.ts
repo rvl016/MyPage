@@ -1,5 +1,6 @@
 import { AppInterface } from '../interface/appInterface';
-import { PATHFIELD, VISITFIELD, ISGOAL, ISSTART, PATHFOUNDFIELD } from '../definitions/defs';
+import { PATHFIELD, VISITFIELD, ISGOAL, ISSTART, PATHFOUNDFIELD }
+    from '../definitions/defs';
 
 export class Maze {
 
@@ -62,6 +63,10 @@ export class Maze {
         else if (field == PATHFIELD)
             this.maze[y][x].setIsPath( targState != 0b0 ? true : false, false);
     }
+
+    cellTransitionNotify( x : number, y : number, type : number) {
+        this.appInterface.flashCell( x, y, type);
+    }
 }
 
 export class Cell {
@@ -73,6 +78,8 @@ export class Cell {
     private _foundPath : boolean;
     private _x : number;
     private _y : number;
+    public distance : number;
+    public parent : Cell;
     public walls : Wall[];
     private maze : Maze;
 
@@ -81,7 +88,6 @@ export class Cell {
         this._y = y;
         this.maze = maze;
         this.walls = new Array<Wall>();
-        this.setDefaults();
     }
 
     setDefaults() {
@@ -103,6 +109,10 @@ export class Cell {
     set visited( state : boolean) {
         this._visited = state;
         this.maze.cellNotify( this.x, this.y, VISITFIELD, state);
+    }
+
+    flashCell( type : number) {
+        this.maze.cellTransitionNotify( this.x, this.y, type);
     }
 
     get isPath() {

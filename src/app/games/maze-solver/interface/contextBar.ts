@@ -1,41 +1,61 @@
 import * as PIXI from 'pixi.js';
 import * as consts from '../definitions/defs';
+import * as algorithms from '../definitions/algorithms';
 import { Cell } from '../generator/maze'; 
 import { AppInterface } from './appInterface';
 import { PixiBox } from './mazeGraphics';
 
-export class MazeBar {
+export class MazeBar extends PIXI.Container {
 
     protected startButton : StartButton;
     protected algorithmsButtons : AlgorithmButton[];
+    protected slider : SliderButton;
+
+    protected _height_ : number;
+    protected _width_ : number;
+
     protected selected : AlgorithmButton;
 
-    protected context : any;
+    protected mainContainer : PIXI.Container;
     protected appInterface : AppInterface;
-    protected pixiBox : PixiBox;
+    public pixiBox : PixiBox;
 
-    protected xInit : number;
-    protected yInit : number;
-    protected deltaX : number;
-    protected deltaY : number;
+    protected spawnMap : Map<number, Function>;
     
-    constructor( xInit : number, yInit : number, deltaX : number, 
-        deltaY : number, type : number, appInterface : AppInterface, 
-        context : any, pixiBox : PixiBox) {
-        this.context = context;
+    constructor( yInit : number, width : number, height : number,
+         appInterface : AppInterface, 
+        mainContainer : PIXI.Container, pixiBox : PixiBox) {
+        super();
+        mainContainer.addChild( this);
         this.appInterface = appInterface;
         this.pixiBox = pixiBox;
-        this.xInit = xInit;
-        this.yInit = yInit;
-        this.deltaY = deltaY;
-        this.deltaX = deltaX;
+        this.x = 0;
+        this.y = yInit;
+        this._height_ = height;
+        this._width_ = width;
+        this.height = consts.BARHEIGHT;
+        this.width = this.parent.width;
         this.selected = null;
-        this.spawBar( type);
+        this.spawnMap = new Map( [
+            [consts.BUILD, this.spawBar( consts.BUILD)],
+            [consts.SEARCH, this.spawBar( consts.SEARCH)],
+            [consts.SLIDER, this.spawSlider],
+            [consts.RESET, this.spawReset]
+        ]);
     }
 
-    destroyBar() {
-        this.startButton.destroy();
-        this.algorithmsButtons.map( ( _) => ( _.destroy()));
+    echoContextChange( state : number) {
+        this.destroy(); 
+        this.spawnMap.get( consts.state2barType.get( state))(); 
+    }
+
+
+    destroy() {
+        // As long as children iterable gets updated by parent class, 
+        //  I can't use map here =(
+        while (this.children.length > 0) {
+            this.children.pop().destroy();
+        }
     }
 
     get mazeState() {
@@ -54,13 +74,29 @@ export class MazeBar {
         return this.appInterface.algorithm != null;
     }
 
+    get height_() {
+        return this._height_;
+    }
+
+    get width_() {
+        return this._width_;
+    }
+
+    get eventHandlerInterval() {
+        return this.appInterface.eventHandlerInterval;
+    }
+
+    set eventHandlerInterval( interval : number) {
+        this.appInterface.eventHandlerInterval = interval;
+    }
+
     callStart() {
         this.appInterface.start();
     }
 
     setAlgorithm( buttonElem : AlgorithmButton) {
         if (this.selected) 
-            this.selected.toggleDim( this.selected.button);
+            this.selected.toggleDim( this.selected);
         this.selected = buttonElem;
         this.appInterface.algorithm = buttonElem.algorithm;
     }
@@ -69,64 +105,72 @@ export class MazeBar {
         return this.selected;
     }
 
-    spawBar( type : number) {
+    spawBar = ( type : number) => () => {
         var names;
         if (type == consts.BUILD)
-            names = consts.BUILDNAMES;
+            names = algorithms.BUILDNAMES;
         else 
-            names = consts.SEARCHNAMES;
-        this.startButton = new StartButton( this.xInit + this.deltaX * .8, 
-            this.yInit, this.deltaX * .2, this.deltaY, 
-            this.pixiBox, this.context, this);
+            names = algorithms.SEARCHNAMES;
+        this.startButton = new StartButton( this.x + this._width_ * .8, 
+            this._width_ * .2, this);
+        const width = this._width_ * .8 / names.length;
 
-        const width = this.deltaX * .8 / names.length;
-
-        this.algorithmsButtons = names.map( (val, idx) => {
+        this.algorithmsButtons = names.map( ( val, idx) => {
             if (type == consts.BUILD)
-                return new AlgorithmBuildButton( this.xInit + width * idx, 
-                    this.yInit, width, this.deltaY, this.pixiBox, this.context, 
-                    this, idx);
-            return new AlgorithmSearchButton( this.xInit + width * idx, 
-                this.yInit, width, this.deltaY, this.pixiBox, this.context, 
-                this, idx);
+                return new AlgorithmBuildButton( this.x + width * idx, 
+                    width, this, idx);
+            return new AlgorithmSearchButton( this.x + width * idx, 
+                width, this, idx);
         });
+    };
+
+    spawSlider = () => {
+        this.slider = new SliderButton( this);
+    };
+
+    spawReset() {
+
     }
 }
 
-abstract class Button {
+abstract class Button extends PIXI.Graphics {
 
-    public button : PIXI.Graphics;
     protected text : PIXI.Text;
-    protected pixiBox : PixiBox;
-    protected context : any;
     protected mazeBar : MazeBar;
 
-    constructor( x : number, y : number, dx : number, dy : number, pixiBox : any, 
-        context : any, mazeBar : MazeBar) {
-        this.pixiBox = pixiBox;
-        this.toggleDim = this.pixiBox.toggleDim;
+    protected _width_ : number;
+    protected _height_ : number;
+
+    constructor( x : number, dx : number, mazeBar : MazeBar) {
+        super();
         this.mazeBar = mazeBar;
-        this.context = context;
-        this.button = new PIXI.Graphics();
-        this.button.interactive = true;
-        this.button.buttonMode = true;
-        this.context.stage.addChild( this.button);
+        this.toggleDim = this.mazeBar.pixiBox.toggleDim;
+        this.interactive = true;
+        this.buttonMode = true;
+        this.mazeBar.addChild( this);
+        this.x = x;
+        this.y = 0
+        this._height_ = this.mazeBar.height_;
+        this._width_ = dx;
+        this.tint = consts.BASELINEDIM;
+        this.on( 'mousedown', ( e) => this.onSelect());
+        this.drawButton();
     }
 
-    drawButton( x : number, y : number, dx : number, dy : number) {
-        this.button.lineStyle( 2, consts.BUTTONBORDERCOL, 1);
-        this.button.beginFill( consts.BUTTONCOL, 0.25);
-        this.button.drawRect( x, y, dx, dy);
-        this.button.endFill();
+    drawButton() {
+        this.lineStyle( 2, consts.BUTTONBORDERCOL, 1);
+        this.beginFill( consts.BUTTONCOL, 0.25);
+        this.drawRect( 0, 0, this._width_, this._height_);
+        this.endFill();
     }
 
     destroy() {
-        this.button.destroy( { children : true});
+        super.destroy( { children : true });
     }
 
-    abstract drawText( x : number, y : number, dx : number, dy : number);
+    abstract drawText();
 
-    abstract onSelect( button : AlgorithmButton, mazeBar : MazeBar);
+    abstract onSelect();
 
     public toggleDim;
 
@@ -134,33 +178,30 @@ abstract class Button {
 
 class StartButton extends Button {
 
-    constructor( x : number, y : number, dx : number, dy : number, pixiBox : any, 
-        context : any, mazeBar) {
-        super( x, y, dx, dy, pixiBox, context, mazeBar);
-        this.button.tint = consts.BASELINEDIM;
-        this.button.on( 'mousedown', ( e) => this.onSelect( this, this.mazeBar));
-        this.drawButton( x, y, dx, dy);
-        this.drawText( x, y, dx, dy);
+    constructor( x : number, dx : number, mazeBar : MazeBar) {
+        super( x, dx, mazeBar);
+        this.drawText();
     }
 
-    drawText( x : number, y : number, dx : number, dy : number) {
+    drawText() {
         this.text = new PIXI.Text( "Start!", consts.TEXTSTYLE);
-        this.text.x = x + dx / 10;
-        this.text.y = y + dy / 10;
-        this.button.addChild( this.text);
+        this.text.x = this._width_ / 10;
+        this.text.y = this._height_ / 10;
+        this.addChild( this.text);
     }
 
-    onSelect( button : StartButton, mazeBar : MazeBar) {
-        if (! mazeBar.selectedAlgorithm)
+    onSelect() {
+        if (! this.mazeBar.selectedAlgorithm)
             return;
-        if (mazeBar.mazeState != consts.EMPTYMAZE && mazeBar.mazeState !=
-             consts.MAZEREADY)
+        if (this.mazeBar.mazeState != consts.EMPTYMAZE && 
+            this.mazeBar.mazeState != consts.MAZEREADY)
             return;
-        if (! mazeBar.startCell)
+        if (! this.mazeBar.startCell)
             return;
-        if (mazeBar.mazeState == consts.MAZEREADY && ! mazeBar.goalCell)
+        if (this.mazeBar.mazeState == consts.MAZEREADY && 
+            ! this.mazeBar.goalCell)
             return;
-        mazeBar.callStart();
+        this.mazeBar.callStart();
     }
 }
 
@@ -168,116 +209,126 @@ abstract class AlgorithmButton extends Button {
 
     protected algorithmIdx : number; 
     protected mazeBar : MazeBar;
-    public algorithm : (appInterface : AppInterface) => (maze : Cell[][], 
+    public algorithm : ( appInterface : AppInterface) => ( maze : Cell[][], 
         xInit : number, yInit : number) => void;
 
-    constructor( x : number, y : number, dx : number, dy : number, pixiBox : any, 
-        context : any, mazeBar : MazeBar, algorithmIdx : number) {
-        super( x, y, dx, dy, pixiBox, context, mazeBar);
-        this.button.tint = consts.BASELINEDIM;
-        this.button.on( 'mousedown', ( e) => this.onSelect( this, this.mazeBar));
-        this.drawButton( x, y, dx, dy);
+    constructor( x : number, dx : number, mazeBar : MazeBar, 
+        algorithmIdx : number) {
+        super( x, dx, mazeBar);
         this.algorithmIdx = algorithmIdx;
     }
 
-    onSelect( button : AlgorithmButton, mazeBar : MazeBar) {
-        button.toggleDim( button);
-        mazeBar.setAlgorithm( this);
+    onSelect() {
+        this.toggleDim( this);
+        this.mazeBar.setAlgorithm( this);
     }
 
-    drawText : ( x : number, y : number, dx : number, dy : number) => void;
+    drawText : () => void;
 
     defineDrawText = ( algorithmNames) => {
-        this.drawText = ( x : number, y : number, dx : number, dy : number) => {
+        this.drawText = () => {
             this.text = new PIXI.Text( algorithmNames[this.algorithmIdx], 
                 consts.TEXTSTYLE);
-            this.text.x = x + dx / 10;
-            this.text.y = y + dy / 10;
-            this.button.addChild( this.text);
+            this.text.x = this._width_ / 10;
+            this.text.y = this._height_ / 10;
+            this.addChild( this.text);
         }
     }
 }
 
 class AlgorithmBuildButton extends AlgorithmButton {
 
-    constructor( x : number, y : number, dx : number, dy : number, pixiBox : any, 
-        context : any, mazeBar : MazeBar, algorithmIdx : number) {
-            super( x, y, dx, dy, pixiBox, context, mazeBar, algorithmIdx);
-            this.algorithm = consts.BUILDFUNCS[algorithmIdx];
-            this.defineDrawText( consts.BUILDNAMES);
-            this.drawText( x, y, dx, dy);
+    constructor( x : number, dx : number, mazeBar : MazeBar, 
+        algorithmIdx : number) {
+        super( x, dx, mazeBar, algorithmIdx);
+        this.algorithm = algorithms.BUILDFUNCS[algorithmIdx];
+        this.defineDrawText( algorithms.BUILDNAMES);
+        this.drawText();
     }
 
 }
 
 class AlgorithmSearchButton extends AlgorithmButton {
 
-    constructor( x : number, y : number, dx : number, dy : number, pixiBox : any, 
-        context : any, mazeBar : MazeBar, algorithmIdx : number) {
-            super( x, y, dx, dy, pixiBox, context, mazeBar, algorithmIdx);
-            this.algorithm = consts.SEARCHFUNCS[algorithmIdx];
-            this.defineDrawText( consts.SEARCHNAMES);
-            this.drawText( x, y, dx, dy);
-    }
+    constructor( x : number, dx : number, mazeBar : MazeBar, 
+        algorithmIdx : number) {
+        super( x, dx, mazeBar, algorithmIdx);
+        this.algorithm = algorithms.SEARCHFUNCS[algorithmIdx];
+        this.defineDrawText( algorithms.SEARCHNAMES);
+        this.drawText();
+}
 
 }
 
-class Slider extends PIXI.Container {
- 
-    protected context : any;
-    protected appInterface : AppInterface;
+class SliderButton extends PIXI.Graphics {
 
-    protected slider : PIXI.Sprite;
+    protected mazeBar : MazeBar;
 
-    protected yInit : number;
-    protected deltaX : number;
-    protected deltaY : number;
+    protected maxInterval : number; 
+    protected minInterval : number;
+    protected slideSpace : number;
 
-    constructor( yInit : number, deltaX : number, deltaY : number, 
-        appInterface : AppInterface, context : any) {
+    protected data : any;
+    protected dragging : boolean;
+
+    protected _width_ : number;
+    protected _height_ : number;
+
+    constructor( mazeBar : MazeBar) {
         super();
-        this.context = context;
-        this.appInterface = appInterface;
-        this.yInit = yInit;
-        this.deltaY = deltaY;
-        this.deltaX = deltaX;
+        this.mazeBar = mazeBar;
 
-        this.context.addChild( this);
-        this.slider = new PIXI.Sprite();
-        this.slider.interactive = true;
-        this.slider.buttonMode = true;
+        this.maxInterval = mazeBar.eventHandlerInterval * 1000;
+        this.minInterval = this.maxInterval / 1000;
 
-        this.slider
-            .on('pointerdown', onDragStart)
-            .on('pointerup', onDragEnd)
-            .on('pointerupoutside', onDragEnd)
-            .on('pointermove', onDragMove);
+        this._width_ = this.mazeBar.width_ / 10;
+        this._height_ = this.mazeBar.height_;
 
-        this.sliderWidth = deltaY / 10;
-        // move the sprite to its designated position
-        this.slider.x = (this.deltaX - this.sliderWidth) / 2;
-        this.slider.y = this.yInit;
+        this.slideSpace = this.mazeBar.width_ - this._width_;
+        this.x = this.slideSpace / 2;
+        this.y = 0;
+
+        this.mazeBar.addChild( this);
+
+        this.interactive = true;
+        this.buttonMode = true;
+
+        this
+            .on('pointerdown', this.onDragStart)
+            .on('pointerup', this.onDragEnd)
+            .on('pointerupoutside', this.onDragEnd)
+            .on('pointermove', this.onDragMove);
+    
+        this.lineStyle( 2, consts.BUTTONBORDERCOL, 1);
+        this.beginFill( consts.BUTTONCOL, 0.25);
+        this.drawRect( 0, 0, this._width_, this._height_);
+        this.endFill();
     }
 
     onDragStart( event) {
         this.data = event.data;
-        this.alpha = 0.5;
+        this.alpha = 0.7;
         this.dragging = true;
     }
 
     onDragEnd() {
         this.alpha = 1;
         this.dragging = false;
-        // set the interaction data to null
         this.data = null;
+    }
+
+    slider2interval() {
+        const tick = (Math.log10( this.maxInterval) - 
+            Math.log10( this.minInterval)) / this.slideSpace;
+        return 10 ** ((this.slideSpace - this.x) * tick);
     }
 
     onDragMove() {
         if (this.dragging) {
-            const newPosition = this.data.getLocalPosition(this.parent);
-            this.x = newPosition.x;
-            this.y = newPosition.y;
+            const newPosition = this.data.getLocalPosition( this.parent);
+            this.x = Math.max( Math.min( newPosition.x, this.slideSpace), 
+            0);
+            this.mazeBar.eventHandlerInterval = this.slider2interval();
         }
     }
-
 } 

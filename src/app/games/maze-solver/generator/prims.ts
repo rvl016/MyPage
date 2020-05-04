@@ -37,5 +37,7 @@ export const prim = (appInterface : AppInterface) =>
         })};
 
         await loop();
-        appInterface.signalAlgorithmEnd();
+        
+        appInterface.eventHandlerQueue.push( () => 
+            appInterface.signalAlgorithmEnd());
     }
