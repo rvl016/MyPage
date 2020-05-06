@@ -29,11 +29,12 @@ import { ContactComponent } from './contact/contact.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { GamesComponent } from './games/games.component';
 import { SnakeComponent } from './games/snake/snake.component';
+import { MazeSolverComponent } from './games/maze-solver/maze-solver.component';
 
 import { BrickService } from './services/brick.service';
 import { FeaturedProjectsService } from './services/featured-projects.service';
 import { GameService } from './services/game.service';
-import { MazeSolverComponent } from './games/maze-solver/maze-solver.component';
+import { ProfileService } from './services/profile.service';
 
 
 
@@ -73,7 +74,8 @@ import { MazeSolverComponent } from './games/maze-solver/maze-solver.component';
   providers: [
     BrickService, 
     FeaturedProjectsService,
-    GameService
+    GameService,
+    ProfileService
   ],
   entryComponents: [
     FeedbackComponent

@@ -1,0 +1,15 @@
+@import 'variables';
+
+@mixin zero-margin( $pad-up-down, $pad-left-right) {
+  margin: 0px auto;
+  padding: $pad-up-down $pad-left-right;
+}
+
+@mixin standardMargin {
+  margin: 5% auto;
+  max-width: 1100px;
+}
+
+@mixin standardPadding {
+  padding: 10px 20px 10px;
+}

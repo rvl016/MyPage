@@ -1,35 +1,39 @@
-<div class="container"
-     fxLayout="row"
-     fxLayout.sm="column"
-     fxLayout.xs="column"
-     fxLayoutAlign="space-around center"
-     fxLayoutGap="20px">
 
-    <mat-card *ngIf="brick" fxFlex>
-    <mat-card-header>
-        <div mat-card-avatar></div>
-        <mat-card-title>
-        <h3>{{brick.name | uppercase}}</h3>
-        </mat-card-title>
-    </mat-card-header>
-    <img mat-card-image src={{brick.image}} alt={{brick.name}}>
-    <mat-card-content>
-        <p>{{brick.description}}</p>
-    </mat-card-content>
-    </mat-card>
+<div class = "darkBackground bottonPadding">
+  <div class="standardMargin container"
+    fxLayout = "column"
+    fxLayoutGap = "20px">
+    <div class = "container" fxLayout = "row" fxLayout.lt-md = "column" 
+      fxFlex = "100" fxFlex.gt-sm = "70" fxLayoutGap = "50px" 
+      fxLayoutAlign = "center center">
+      <p class = "title">Ravi do Valle Luz</p>
+      <img mat-card-image class = "imgScaleDown img" src = "/assets/images/code.jpeg"
+        alt = "Me">
+    </div>
+    <div class = "container" fxFlex fxFlex.lt-sm = "30%">
+      <p class = "subTitle">Welcome to my webpage, I hope you find something useful or interesting!</p>
+    </div>
+    <div fxFlex></div>
+  </div>
+</div>
 
-    <mat-card *ngIf="featuredProject" fxFlex>
-    <mat-card-header>
-        <div mat-card-avatar></div>
-        <mat-card-title>
-        <h3>{{featuredProject.name | uppercase}}</h3>
-        </mat-card-title>
-    </mat-card-header>
-    <img mat-card-image src={{featuredProject.image}} alt={{featuredProject.name}}>
-    <mat-card-content>
-        <p>{{featuredProject.description}}
-        </p>
-    </mat-card-content>
-    </mat-card>
-
+<div fxLayout = "column" fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px" class = 
+  "standardMargin bottonPadding verticalMargin">
+  <div *ngFor = "let presentationParagraph of presentation; let i = index"
+    class = "container" fxLayout = "row" fxLayout.lt-md = "column"
+    fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px">
+    <div fxFlex = "75" fxFlex.lt-md = "100" 
+      fxFlexOrder = "{{ i % 2 == 0 ? 1 : 3 }}">
+      {{ presentationParagraph.text }}
+    </div>
+    <mat-divider fxFlexOrder = "2" [vertical] = "true" fxHide.lt-md
+      class = "standardMatVDivider"></mat-divider>
+    <mat-divider fxFlexOrder = "4" fxShow.lt-md
+      class = "standardMatHDivider"></mat-divider>
+    <div fxFlex = "25"  fxFlexAlign = "center center"
+      fxFlexOrder = "{{ i % 2 == 0 ? 3 : 1 }}" fxHide.lt-md>
+      <img mat-card-image class = "imgScaleDown" 
+        src = "{{ presentationParagraph.image }}">
+    </div>
+  </div>
 </div>

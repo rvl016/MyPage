@@ -1,47 +1,105 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import 'variables';
+@import 'mixins';
 @import '../node_modules/font-awesome/scss/font-awesome.scss';
 // some basic resets
 
+html body {
+  background-color: $background-medium!important;
+  color: $primary-color-text!important;
+}
+
 body {
-    padding : 0;
-    margin : 0;
-    font-family: Roboto, sans-serif;
+  padding : 0 0 120px 0;
+  margin : 0;
+  font-family: Roboto, sans-serif;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  font-size: 18px;
+}
+
+p {
+  display: block;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
 }
 
 .container {
-    margin : 10px;
-    display: flex;
+  margin : 20px;
+  display: flex;
 }
 
-$lt-gray: #ddd;
-$background-dark: #512DA8;
-$background-light: #9575CD;
-$background-pale: #D1C4E9;
-$primary-color-dark:   #512DA8;
-$primary-color:        #673AB7;
-$primary-color-light:  #D1C4E9;
-$primary-color-text:   #FFFFFF;
-$accent-color:         #FFC107;
-$primary-text-color:   #212121;
-$secondary-text-color: #757575;
-$divider-color:        #BDBDBD;
-
-@mixin zero-margin($pad-up-down, $pad-left-right) {
-    margin: 0px auto;
-    padding: $pad-up-down $pad-left-right;
+.standardPadding {
+  padding: 10px 20px 10px;
 }
 
+.imgScaleDown {
+  object-fit: scale-down;
+  max-width: 100%;
+  margin: auto auto;
+  filter: drop-shadow(0 0 2px black);
+  vertical-align: middle;
+}
+
+.standardMargin {
+  margin: 0% auto;
+  max-width: 1100px;
+}
+
+.verticalMargin {
+  margin-top: 50px !important;
+  margin-bottom: 50px !important;
+}
+
+.standardMatVDivider{
+  border-right-color: $divider-color!important;
+  border-right-style: solid!important;
+  border-right-width: 2px!important;
+}
+
+.standardMatHDivider{
+  border-top-color: $divider-color!important;
+  border-top-style: solid!important;
+  border-top-width: 2px!important;
+}
+
+.darkBackground {
+  width: 100%;
+  margin-top: 0;
+  background-color: $background-dark !important;
+}
+
+.bottonPadding {
+  padding-bottom: 50px !important;
+}
+
+.topPadding {
+  padding-top: 30px !important;
+}
+
+.title {
+  font-size: 3rem;
+  text-align: center;
+}
+.subTitle {
+  font-size: 1.5rem;
+  text-align: center;
+}
 
 .background-primary {
-    background-color: $background-dark!important;
+  background-color: $background-medium!important;
   }
 .background-accent {
-    background-color: $accent-color!important;
-  }
+  background-color: $accent-color!important;
+}
 .text-floral-white {
-    color: floralwhite!important;
+  color: floralwhite!important;
 }
 
 .flex-spacer {

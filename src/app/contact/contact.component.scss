@@ -1,0 +1,21 @@
+@import '../../variables';
+
+
+.btn-linkedin {
+  color: $primary-color-text!important;
+  background-color:$background-darker!important;
+}
+.btn-mail {
+  color: $primary-color-text!important;
+  background-color:$background-darker!important;
+}
+.btn-phone {
+  color: $primary-color-text!important;
+  background-color:$background-darker!important;
+}
+
+p {
+  display: flex;
+  justify-content: center;
+}
+
