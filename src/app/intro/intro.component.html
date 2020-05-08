@@ -1,22 +1,62 @@
-<div class = "container"
-     fxLayout = "column"
-     fxLayoutGap = "25px">
-
-  <div fxFlex>
-    <div>
-      <h3>How to get here?</h3>
-      <hr>
+<div class = "darkBackground bottonPadding topPadding">
+  <div class="standardMargin container"
+    fxLayout = "column">
+    <div class = "innerMargin" fxLayout = "column" fxLayoutGap = "20px">
+      <div fxFlex = "100" fxLayoutAlign = "center center">
+        <p class = "title">Known Tech</p>
+      </div>
+      <div fxFlex fxLayoutAlign = "center center">
+        <p class = "subTitle">I've had at least some dozens of hours practicing each of those:</p>
+      </div>
     </div>
-  </div>  
-  
-  <div fxFlex>
-    <mat-grid-list cols = "4" rowHeight = "200px">
-      <mat-grid-tile *ngFor = "let brick of bricks" 
-        [routerLink] = "['/introdetail',brick.id]">
-        <img height = "200px" src = {{brick.image}} alt = {{brick.name}}>
-        <mat-grid-tile-footer>
-            <h1 matLine> {{brick.name | uppercase}} </h1>
-        </mat-grid-tile-footer>
+  </div>
+</div>
+
+
+<div fxLayout = "column" fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px" 
+  class = "standardMargin bottonPadding verticalMargin"
+>
+  <div fxFlex class = "innerMargin">
+    <h2>Programming Languages</h2>
+    <mat-grid-list [cols] = "breakpointGridColumns" rowHeight = "200px"
+      (window:resize) = "onResize( $event)" gutterSize = "15px" >
+      <mat-grid-tile *ngFor = "let brick of progLanguages">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title> {{ brick.title }} </mat-card-title>
+          </mat-card-header>
+          <img class = "imgScaleDown" src = "{{ brick.image }}" alt = "">
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+  <mat-divider class = "standardMatHDivider"></mat-divider>
+  <div fxFlex class = "innerMargin">
+    <h2>Other Languages</h2>
+    <mat-grid-list [cols] = "breakpointGridColumns" rowHeight = "200px"
+    gutterSize = "15px" >
+      <mat-grid-tile *ngFor = "let brick of otherLanguages">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title> {{ brick.title }} </mat-card-title>
+          </mat-card-header>
+          <img class = "imgScaleDown" src = "{{ brick.image }}" alt = "">
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+  <mat-divider class = "standardMatHDivider"></mat-divider>
+  <div fxFlex class = "innerMargin">
+    <h2>Frameworks, Libraries and Other Tech</h2>
+    <mat-grid-list [cols] = "breakpointGridColumns" rowHeight = "220px" 
+      gutterSize = "15px" >
+      <mat-grid-tile *ngFor = "let brick of frameworksNOtherLanguages">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title> {{ brick.title }} </mat-card-title>
+          </mat-card-header>
+          <img class = "imgScaleDown" src = "{{ brick.image }}" alt = "">
+        </mat-card>
       </mat-grid-tile>
     </mat-grid-list>
   </div>

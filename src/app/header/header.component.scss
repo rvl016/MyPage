@@ -8,6 +8,36 @@
     z-index: 999;
 }
 
+.mat-toolbar-row, .mat-toolbar-single-row {
+    height: 50px;
+}
+
+::ng-deep.cdk-overlay-connected-position-bounding-box {
+    top: 50px !important;
+    left: 0px !important;
+    width: 100vw !important;
+}
+
+::ng-deep.cdk-overlay-pane {
+    top: 0px !important;
+    left: 0px !important;
+    width: 100vw !important;
+}
+
+::ng-deep.mat-menu-panel {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    border-radius: 0px !important;
+}
+
+a, button {
+    font-weight: 700;
+}
+
+.fullButton {
+    width: 100vw;
+    border-radius: 0px;
+}
 
 .active {
     background-color: $background-medium;

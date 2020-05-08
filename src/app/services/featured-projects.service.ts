@@ -10,11 +10,11 @@ export class FeaturedProjectsService {
   constructor() { }
 
   getFeaturedProjects() : FeaturedProject[] {
-    return FEATUREDPROJECTS;
+    return FEATUREDPROJECTS.filter( project => project.active == true );
   }
 
   getFeaturedProject( ) : FeaturedProject {
-    return FEATUREDPROJECTS.filter((project) => { project.id == 0 })[0];
+    return FEATUREDPROJECTS.filter( project => { project.id == 0 })[0];
   }
 
 

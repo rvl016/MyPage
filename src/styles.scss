@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
 @import 'variables';
 @import 'mixins';
 @import '../node_modules/font-awesome/scss/font-awesome.scss';
@@ -43,7 +43,7 @@ p {
   object-fit: scale-down;
   max-width: 100%;
   margin: auto auto;
-  filter: drop-shadow(0 0 2px black);
+  filter: drop-shadow( 0 0 1px black);
   vertical-align: middle;
 }
 
@@ -57,16 +57,41 @@ p {
   margin-bottom: 50px !important;
 }
 
-.standardMatVDivider{
+.innerMargin {
+  margin: 20px;
+}
+
+.mat-dialog-container {
+  background: $background-medium-dark !important;
+  color: $primary-text-color !important;
+}
+
+.mat-toolbar.mat-primary {
+  background: $background-dark !important;
+  color: $primary-text-color !important;
+}
+
+.mat-input-element {
+  color: $primary-text-color !important;
+  caret-color: $secondary-text-color !important;
+}
+
+.standardMatVDivider {
   border-right-color: $divider-color!important;
   border-right-style: solid!important;
   border-right-width: 2px!important;
 }
 
-.standardMatHDivider{
+.standardMatHDivider {
   border-top-color: $divider-color!important;
   border-top-style: solid!important;
   border-top-width: 2px!important;
+}
+
+.mat-standard-chip {
+  color: $primary-text-color !important;
+  background-color: $background-light !important;
+  min-height: 22px !important;
 }
 
 .darkBackground {
@@ -86,6 +111,7 @@ p {
 .title {
   font-size: 3rem;
   text-align: center;
+  font-weight: 520;
 }
 .subTitle {
   font-size: 1.5rem;

@@ -1,0 +1,53 @@
+<div class = "darkBackground bottonPadding topPadding">
+  <div class="standardMargin container"
+    fxLayout = "column">
+    <div class = "innerMargin" fxLayout = "column" fxLayoutGap = "20px">
+      <div fxFlex = "100" fxLayoutAlign = "center center">
+        <p class = "title">Projects</p>
+      </div>
+      <div fxFlex fxLayoutAlign = "center center">
+        <p class = "subTitle">Made by me</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div fxLayout = "column" fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px" 
+  class = "standardMargin bottonPadding verticalMargin"
+>
+  <div fxFlex class = "innerMargin">
+    <mat-grid-list [cols] = "breakpointGridColumns" rowHeight = "650px"
+      (window:resize) = "onResize( $event)" gutterSize = "10px" >
+      <mat-grid-tile *ngFor = "let project of projects">
+        <mat-card fxLayout = "column">
+          <mat-card-header>
+            <mat-card-title class = "projectTitle"> {{ project.name }} </mat-card-title>
+          </mat-card-header> 
+          <img class = "imgScaleDown" src = "{{ project.image }}" alt = "">
+          <div fxFlex></div>
+          <mat-card-content>
+            <div class = "cardContainer" fxLayout = "column">
+              <mat-chip-list>
+                <mat-chip *ngFor = "let tech of project.usedTechs">
+                  {{ tech }}
+                </mat-chip>
+              </mat-chip-list>
+              <mat-divider class = "standardMatHDivider"></mat-divider>
+              <p class = "projectDescription">{{ project.description }}</p>
+            </div>
+          </mat-card-content>
+          <div class = "cardContainer" fxLayout = "row">
+            <a mat-raised-button href = "{{ project.ghLink }}" target = "_blank">
+              GitHub Page
+            </a>
+            <div fxFlex></div>
+            <button mat-raised-button *ngIf = "project.tryItLink" 
+              routerLink = "{{ project.tryItLink }}" routerLinkActive = 'active'>
+              Try it!
+            </button>
+          </div>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>

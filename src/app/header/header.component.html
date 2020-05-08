@@ -1,13 +1,33 @@
-<mat-toolbar class = "mat-elevation-z8">
-    <a mat-button routerLink = "/home" routerLinkActive = 'active'><span class="fa fa-home fa-lg"></span> Home</a>
-    <a mat-button routerLink = "/about" routerLinkActive = 'active'><span class="fa fa-info fa-lg"></span> About Me</a>
-    <a mat-button routerLink = "/projects" routerLinkActive = 'active'><span class="fa fa-code fa-lg"></span> Projects</a>
-    <a mat-button routerLink = "/utilities" routerLinkActive = 'active'><span class="fa fa-gear fa-lg fa-spin-hover"></span> Utilities</a>
-    <a mat-button routerLink = "/games" routerLinkActive = 'active'>
-      <span class="fa fa-gamepad fa-lg"></span> Inutilities
-    </a>	
-    <a mat-button routerLink = "/intro" routerLinkActive = 'active'><span class="fa fa-list fa-lg"></span> Known Tech</a>
-    <a mat-button routerLink = "/contact" routerLinkActive = 'active'><span class="fa fa-address-card fa-lg"></span> Contact</a>
-    <span class = "flex-spacer"></span>
-    <a mat-button (click) = "openFeedbackForm()"><span class = "fa fa-paper-plane fa-lg"></span> Feedback</a>
+<mat-toolbar class = "mat-elevation-z8" (window:resize) = "onResize( $event)">
+  <div *ngIf = "breakpointAppBar; else fullBar">
+    <div>
+      <a mat-button [matMenuTriggerFor] = "mobileMenu">
+        <fa-icon [icon] = "faBars" size = "lg" fa-lg [fixedWidth] = "true"
+        ></fa-icon> Menu
+      </a>
+      <mat-menu #mobileMenu = "matMenu">
+        <div *ngFor = "let route of routes" >
+          <a mat-button routerLink = "{{ route.route }}" routerLinkActive = "active"
+            class = "fullButton">
+            <fa-icon [iconclass = "{{ route.iconClasses }} fa-fw"></fa-icon> {{ route.title }}
+          </a>
+        </div>
+      </mat-menu>
+    </div>
+  </div>
+  <ng-template #fullBar>
+    <div fxFlex></div>
+    <div *ngFor = "let route of routes" >
+      <a mat-button routerLink = "{{ route.route }}" routerLinkActive = "active">
+        <span class = "{{ route.iconClasses }} fa-fw"></span> {{ route.title }}
+      </a>
+    </div>
+    <div fxFlex></div>
+  </ng-template>
 </mat-toolbar>
+
+
+    <!-- <a mat-button routerLink = "/about" routerLinkActive = 'active'><span 
+      class = "fa fa-info fa-lg"></span> About Me</a> -->
+    <!-- <a mat-button (click) = "openFeedbackForm()" disabled><span class = 
+      "fa fa-paper-plane fa-lg"></span> Feedback</a> -->

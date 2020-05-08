@@ -3,7 +3,7 @@ import { Presentation, Tech } from './profileDataType'
 export const PRESENTATION_DATA : Presentation[] = [
   { 
     id: 1,
-    text: "I'm a undergraduate student of Molecular Sciences at Universidade de São Paulo. No, this course is not only about chemistry, it is an interdisciplinary course that involves math and programming too. Also, this program includes total freedom of subject choice for the latter half of the student’s track, when I’ve chosen mostly Computer Science and Statistics subjects.", 
+    text: "I'm a undergraduate student of Molecular Sciences at Universidade de São Paulo. This course is not only about chemistry, it is an interdisciplinary course that involves math and programming too. Also, this program includes total freedom of subject choice for the latter half of the student’s track, when I’ve chosen mostly Computer Science and Statistics subjects.", 
     image: "/assets/images/usp-logo.png"
   },
   {
@@ -102,6 +102,11 @@ export const FRAMEWORKS_N_OTHER_TECH : Tech[] = [
   },
   {
     id: 4,
+    title: "Pandas",
+    image: "/assets/images/Pandas.png"
+  },
+  {
+    id: 5,
     title: "Linux",
     image: "/assets/images/ArchLinux.png"
   }

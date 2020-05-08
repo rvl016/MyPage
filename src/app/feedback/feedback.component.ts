@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { StarRatingComponent } from 'ng-starrating';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,7 +9,8 @@ import { Feedback, Rating } from '../share/feedback';
 @Component({
   selector: 'app-feedback',
   templateUrl: './feedback.component.html',
-  styleUrls: ['./feedback.component.scss']
+  styleUrls: ['./feedback.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class FeedbackComponent implements OnInit {
 

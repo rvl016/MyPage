@@ -1,17 +1,59 @@
 @import '../../variables';
 
 .half-width {
-    width : 70%
+    width: 70%;
 }
 
 .full-width {
-    width : 100%
+    width: 100%;
 }
 
 .quarter-width {
-    width : 35%
+    width: 35%;
+}
+
+mat-form-field {
+    color: $primary-text-color;
 }
 
 mat-error {
-    font-size: 11px;
+    font-size: 12px;
+}
+
+.dialog-headline {
+    font-weight: 600;
+    margin: -1em -.9em 0;
+    padding: 1em;
+    display: block;
+    text-align: center;
+    font-size: 1.5em;
+    background-color: $background-dark;
+}
+
+::ng-deep .mat-focused .mat-form-field-label {
+/*change color of label*/
+    color: $accent-color !important;
+}
+  
+::ng-deep.mat-form-field-underline {
+/*change color of underline*/
+    background-color: $accent-color !important;
+} 
+  
+::ng-deep.mat-form-field-ripple {
+/*change color of underline when focused*/
+    background-color: $accent-color !important;
+}
+
+::ng-deep.mat-error {
+    color: $error-color !important;
+}
+
+/* Sets the underline to red if dirty and invalid */
+::ng-deep .mat-form-field.ng-dirty.ng-invalid .mat-form-field-underline {
+    background-color: $error-color !important;
+}
+/* Sets the label to red if dirty and invalid */
+::ng-deep .mat-form-field.ng-dirty.ng-invalid .mat-form-field-label {
+    color: $error-color !important;
 }

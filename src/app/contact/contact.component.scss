@@ -14,8 +14,9 @@
   background-color:$background-darker!important;
 }
 
-p {
+p, h2 {
   display: flex;
   justify-content: center;
+  text-align: center;
 }
 

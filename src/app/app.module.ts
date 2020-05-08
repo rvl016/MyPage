@@ -6,6 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +16,9 @@ import { FormsModule } from '@angular/forms';
 import { RatingModule } from 'ng-starrating';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
@@ -35,6 +39,7 @@ import { BrickService } from './services/brick.service';
 import { FeaturedProjectsService } from './services/featured-projects.service';
 import { GameService } from './services/game.service';
 import { ProfileService } from './services/profile.service';
+import { ProjectsComponent } from './projects/projects.component';
 
 
 
@@ -50,7 +55,8 @@ import { ProfileService } from './services/profile.service';
     FeedbackComponent,
     GamesComponent,
     SnakeComponent,
-    MazeSolverComponent
+    MazeSolverComponent,
+    ProjectsComponent
   ],
   imports: [
     BrowserModule,
@@ -69,7 +75,10 @@ import { ProfileService } from './services/profile.service';
     MatRadioModule,
     RatingModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatChipsModule,
+    MatMenuModule, 
+    FontAwesomeModule
   ],
   providers: [
     BrickService, 

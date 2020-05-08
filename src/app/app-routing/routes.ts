@@ -7,10 +7,12 @@ import { GamesComponent } from '../games/games.component';
 import { SnakeComponent } from '../games/snake/snake.component';
 import { MazeSolverComponent } from '../games/maze-solver/maze-solver.component';
 import { ContactComponent } from '../contact/contact.component';
+import { ProjectsComponent } from '../projects/projects.component';
 
 export const routes: Routes = [
   {path: 'home', component: HomeComponentComponent},
   {path: 'contact', component: ContactComponent},
+  {path: 'projects', component: ProjectsComponent},
   {path: 'games', component: GamesComponent},
   {path: 'intro', component: IntroComponent},
   {path: 'introdetail/:id', component: IntroDetailComponent},
