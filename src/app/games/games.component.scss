@@ -1,0 +1,31 @@
+@import '../../variables';
+
+
+
+mat-card {
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  padding: 12px;
+  color: $primary-text-color;
+  background-color: $background-medium-dark;
+}
+
+mat-card-header {
+  display: block !important;
+  text-align: center !important;
+}
+
+mat-card-title {
+  font-weight: 700 !important;
+}
+
+img {
+  max-width: 100%;
+  max-height: calc( 100% - 25px);
+  text-align: center;
+  display: block;
+}
+
+.mat-card:not( [class*=mat-elevation-z]) {
+  box-shadow: 3px 3px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+}

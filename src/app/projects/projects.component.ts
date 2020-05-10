@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FeaturedProject } from '../share/featured-project';
 import { FeaturedProjectsService } from '../services/featured-projects.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projects',
@@ -12,7 +13,8 @@ export class ProjectsComponent implements OnInit {
   projects : FeaturedProject[];
   breakpointGridColumns: number;
 
-  constructor( private projectService : FeaturedProjectsService) { 
+  constructor( private projectService : FeaturedProjectsService, 
+    private router : Router) { 
     this.projects = null;
   }
 
@@ -26,8 +28,12 @@ export class ProjectsComponent implements OnInit {
     this.breakpointGridColumns = this.getColsNumber( event.target.innerWidth);
   }
 
+  tryProject( route : string) : void {
+    this.router.navigateByUrl( route);
+  }
+
   getColsNumber( innerWidth : number) : number {
-    if (innerWidth < 900) 
+    if (innerWidth < 800) 
       return 1;
     return 2;
   }

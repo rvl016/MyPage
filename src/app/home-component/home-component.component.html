@@ -6,34 +6,36 @@
     <div class = "container" fxLayout = "row" fxLayout.lt-md = "column" 
       fxFlex = "100" fxFlex.gt-sm = "70" fxLayoutGap = "50px" 
       fxLayoutAlign = "center center">
-      <p class = "title">Ravi do Valle Luz</p>
-      <img class = "imgScaleDown img" src = "/assets/images/code.jpeg"
-        alt = "Me">
+      <p class = "title" >Ravi do Valle Luz</p>
+      <img class = "imgScaleDown img profile" src = "/assets/images/code.jpeg"
+        alt = "Should be me?">
     </div>
-    <div class = "container" fxFlex fxFlex.lt-sm = "30%">
+    <div class = "container" fxFlex fxFlex.lt-sm = "30%" fxLayoutAlign = "center center">
       <p class = "subTitle">Welcome to my webpage, I hope you find something useful or interesting!</p>
     </div>
     <div fxFlex></div>
   </div>
 </div>
 
-<div fxLayout = "column" fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px" class = 
+<div fxLayout = "column" fxLayoutGap = "50px" fxLayoutGap.lt-sm = "20px" class = 
   "standardMargin bottonPadding verticalMargin">
   <div *ngFor = "let presentationParagraph of presentation; let i = index"
-    class = "container" fxLayout = "row" fxLayout.lt-md = "column"
-    fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px">
-    <div fxFlex = "75" fxFlex.lt-md = "100" 
-      fxFlexOrder = "{{ i % 2 == 0 ? 1 : 3 }}">
+    class = "container" fxLayout = "row" fxLayout.lt-sm = "column"
+    fxLayoutGap = "25px" fxLayoutGap.lt-sm = "20px">
+    <div fxFlex = "75" fxFlex.lt-sm = "100" 
+      fxFlexOrder = "{{ i % 2 == 0 ? 1 : 3 }}" fxLayoutAlign = "start center">
       {{ presentationParagraph.text }}
     </div>
-    <mat-divider fxFlexOrder = "2" [vertical] = "true" fxHide.lt-md
+    <mat-divider fxFlexOrder = "2" [vertical] = "true" fxHide.lt-sm
       class = "standardMatVDivider"></mat-divider>
-    <mat-divider fxFlexOrder = "4" fxShow.lt-md
+    <mat-divider fxFlexOrder = "4" fxHide.gt-xs
       class = "standardMatHDivider"></mat-divider>
-    <div fxFlex = "25"  fxFlexAlign = "center center"
-      fxFlexOrder = "{{ i % 2 == 0 ? 3 : 1 }}" fxHide.lt-md>
+    <div fxFlex = "25" fxLayout = "column"
+      fxFlexOrder = "{{ i % 2 == 0 ? 3 : 1 }}" fxHide.lt-sm>
+      <div fxFlex></div>
       <img class = "imgScaleDown" 
         src = "{{ presentationParagraph.image }}">
+      <div fxFlex></div>
     </div>
   </div>
 </div>

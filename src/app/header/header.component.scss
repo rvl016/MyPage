@@ -9,7 +9,11 @@
 }
 
 .mat-toolbar-row, .mat-toolbar-single-row {
-    height: 50px;
+    height: 50px !important;
+}
+
+::ng-deep.svg-inline--fa {
+    vertical-align: middle !important;
 }
 
 ::ng-deep.cdk-overlay-connected-position-bounding-box {

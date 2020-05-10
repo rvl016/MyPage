@@ -9,6 +9,7 @@ import { Player } from './player/player';
   templateUrl: './snake.component.html',
   styleUrls: ['./snake.component.scss']
 })
+
 export class SnakeComponent implements OnInit {
 
   @ViewChild( 'board', { static : true })

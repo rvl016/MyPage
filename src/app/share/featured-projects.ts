@@ -21,7 +21,7 @@ export const FEATUREDPROJECTS : FeaturedProject[] = [
         usedTechs : ["JavaScript", "Ruby", "C++", "Rails", "React"],
         tryItLink : null,
         label : 'marketLoggerApp',
-        description : "Full stack web project, with Ruby on Rails backend and React frontend. The backend application serves as a JSON API, where it offers stock and companies profiles data and also users profiles."
+        description : "Full stack web project, with Ruby on Rails backend and React frontend. The backend application serves as a JSON API, where it offers stock and companies profiles data and users profiles also."
     },
     {
         id : 2,
@@ -30,7 +30,7 @@ export const FEATUREDPROJECTS : FeaturedProject[] = [
         image : '/assets/images/mazeBoomer.png',
         ghLink : 'https://github.com/rvl016/MazeBoomer',
         usedTechs : ["TypeScript", "PIXI.js"],
-        tryItLink : "/games/maze",
+        tryItLink : "/games?selectedGame=app-maze-solver",
         label : 'mazeBoomerApp',
         description : "This sort of game involves building a maze with a choosen algorithm and then solve a path between two choosen cells with a choosen algorithm. When solving a path, the user can place and remove barriers in unexplored areas of the maze, affecting the solver's path."
     },

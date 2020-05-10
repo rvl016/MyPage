@@ -7,7 +7,7 @@ export const MAIN_ROUTES : Route[] = [
     title: "Home"
   },
   {
-    route: "/intro",
+    route: "/known-tech",
     iconClasses: "fa fa-list fa-lg",
     title: "Known Tech"
   },

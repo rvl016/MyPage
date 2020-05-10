@@ -1,19 +1,14 @@
 <mat-toolbar class = "mat-elevation-z8" (window:resize) = "onResize( $event)">
-  <div *ngIf = "breakpointAppBar; else fullBar">
+  <div *ngIf = "breakpointAppBar; else fullBar" fxFlex fxLayout = "row">
+    <div fxFlex></div>
     <div>
-      <a mat-button [matMenuTriggerFor] = "mobileMenu">
-        <fa-icon [icon] = "faBars" size = "lg" fa-lg [fixedWidth] = "true"
-        ></fa-icon> Menu
+      <a mat-button [matMenuTriggerFor] = "mobileMenu"
+        style = "font-size: 0.7rem;">
+        <fa-icon [icon] = "faBars" size = "2x" class = "middle"  
+          fixedwidth = "true"></fa-icon>
       </a>
-      <mat-menu #mobileMenu = "matMenu">
-        <div *ngFor = "let route of routes" >
-          <a mat-button routerLink = "{{ route.route }}" routerLinkActive = "active"
-            class = "fullButton">
-            <fa-icon [iconclass = "{{ route.iconClasses }} fa-fw"></fa-icon> {{ route.title }}
-          </a>
-        </div>
-      </mat-menu>
     </div>
+    <div fxFlex></div>
   </div>
   <ng-template #fullBar>
     <div fxFlex></div>
@@ -27,6 +22,14 @@
 </mat-toolbar>
 
 
+<mat-menu #mobileMenu = "matMenu">
+  <div *ngFor = "let route of routes" >
+    <a mat-button routerLink = "{{ route.route }}" routerLinkActive = "active"
+      class = "fullButton">
+      <span class = "{{ route.iconClasses }} fa-fw"></span> {{ route.title }}
+    </a>
+  </div>
+</mat-menu>
     <!-- <a mat-button routerLink = "/about" routerLinkActive = 'active'><span 
       class = "fa fa-info fa-lg"></span> About Me</a> -->
     <!-- <a mat-button (click) = "openFeedbackForm()" disabled><span class = 

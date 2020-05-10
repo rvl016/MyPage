@@ -12,16 +12,17 @@
   </div>
 </div>
 
-<div fxLayout = "column" fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px" 
-  class = "standardMargin bottonPadding verticalMargin"
+<div class = "standardMargin bottonPadding verticalMargin"
 >
-  <div fxFlex class = "innerMargin">
-    <mat-grid-list [cols] = "breakpointGridColumns" rowHeight = "650px"
-      (window:resize) = "onResize( $event)" gutterSize = "10px" >
-      <mat-grid-tile *ngFor = "let project of projects">
+  <div class = "innerMargin" fxLayout.xs = "column" fxLayout = "row wrap" 
+    fxLayoutGap = "20px" ngClass.gt-xs = "ml-10">
+    <ng-template ngFor let-project [ngForOf] = "projects" let-i = "index">
+      <div fxFlex.gt-xs = "0 1 calc( 50% - 20px)">
         <mat-card fxLayout = "column">
           <mat-card-header>
-            <mat-card-title class = "projectTitle"> {{ project.name }} </mat-card-title>
+            <mat-card-title class = "projectTitle">
+              {{ project.name }}
+            </mat-card-title>
           </mat-card-header> 
           <img class = "imgScaleDown" src = "{{ project.image }}" alt = "">
           <div fxFlex></div>
@@ -42,12 +43,19 @@
             </a>
             <div fxFlex></div>
             <button mat-raised-button *ngIf = "project.tryItLink" 
-              routerLink = "{{ project.tryItLink }}" routerLinkActive = 'active'>
+              (click) = "tryProject( project.tryItLink)">
               Try it!
             </button>
           </div>
         </mat-card>
+      </div>
+    </ng-template>
+    
+    <!-- <mat-grid-list [cols] = "breakpointGridColumns"
+      (window:resize) = "onResize( $event)" gutterSize = "10px" rowHeight = "fit">
+      <mat-grid-tile *ngFor = "let project of projects">
+     
       </mat-grid-tile>
-    </mat-grid-list>
+    </mat-grid-list> -->
   </div>
 </div>

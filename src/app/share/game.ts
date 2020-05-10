@@ -1,5 +1,8 @@
 export class Game {
-    name : String
-    id : number
-    image : String
+    name : String;
+    selector : String;
+    id : number;
+    image : String;
+    how2play : String[];
+    explanation : String[];
 }
