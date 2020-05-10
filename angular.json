@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angularConwaysGame": {
+    "myPage": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angularConwaysGame",
+            "outputPath": "dist/myPage",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -68,18 +68,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angularConwaysGame:build"
+            "browserTarget": "myPage:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angularConwaysGame:build:production"
+              "browserTarget": "myPage:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angularConwaysGame:build"
+            "browserTarget": "myPage:build"
           }
         },
         "test": {
@@ -116,15 +116,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "angularConwaysGame:serve"
+            "devServerTarget": "myPage:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "angularConwaysGame:serve:production"
+              "devServerTarget": "myPage:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "angularConwaysGame"
+  "defaultProject": "myPage"
 }
