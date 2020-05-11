@@ -1,11 +1,12 @@
 import { FeaturedProject } from './featured-project';
+import { environment } from '../../environments/environment';
 
 export const FEATUREDPROJECTS : FeaturedProject[] = [
     {
         id : 0,
         active: false,
         name : "Conway's Game of Life",
-        image : '/',
+        image : null,
         ghLink : null,
         usedTechs : ["JavaScript"],
         tryItLink : null,
@@ -16,7 +17,7 @@ export const FEATUREDPROJECTS : FeaturedProject[] = [
         id : 1,
         active: true,
         name : "Market Logger",
-        image : '/assets/images/marketLogger.png',
+        image : environment.baseUrl + '/assets/images/marketLoggerDemo.gif',
         ghLink : 'https://github.com/rvl016/Market-Logger',
         usedTechs : ["JavaScript", "Ruby", "C++", "Rails", "React"],
         tryItLink : null,
@@ -27,10 +28,10 @@ export const FEATUREDPROJECTS : FeaturedProject[] = [
         id : 2,
         active: true,
         name : "Maze Boomer",
-        image : '/assets/images/mazeBoomer.png',
+        image : environment.baseUrl + '/assets/images/mazeBoomerDemo.gif',
         ghLink : 'https://github.com/rvl016/MazeBoomer',
         usedTechs : ["TypeScript", "PIXI.js"],
-        tryItLink : "/games?selectedGame=app-maze-solver",
+        tryItLink : "/games?selected=app-maze-solver",
         label : 'mazeBoomerApp',
         description : "This sort of game involves building a maze with a choosen algorithm and then solve a path between two choosen cells with a choosen algorithm. When solving a path, the user can place and remove barriers in unexplored areas of the maze, affecting the solver's path."
     },

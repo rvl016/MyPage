@@ -1,7 +1,18 @@
+@import '../../../variables';
+
 .game-board {
-    border : 2px solid black;
+    border : 2px solid $background-dark;
+    background-color: $background-lightest;
 }
 
+button {
+    font-weight: 800;
+    background-color: $background-medium-dark-pointer;
+}
+
+.dummyButton {
+    pointer-events: none !important;
+}
 
 #canvas-container {
     width: 100%;

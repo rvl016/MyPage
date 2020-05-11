@@ -84,7 +84,8 @@ import { UtilitiesComponent } from './utilities/utilities.component';
     MatMenuModule, 
     FontAwesomeModule,
     GridModule, 
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatTabsModule
   ],
   providers: [
     BrickService, 

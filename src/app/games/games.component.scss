@@ -1,13 +1,54 @@
 @import '../../variables';
 
+.infoTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
 
+.matHDividerLeft {
+  margin-right: 15px !important;
+}
 
-mat-card {
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
+.matHDividerRight {
+  margin-left: 15px !important;
+}
+
+.infoTitleContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.paragraph {
+  word-wrap: normal;
+  overflow-wrap: break-word;
+  margin-bottom: 10px;
+}
+
+.gameCard {
+  color: $primary-text-color;
+  background-color: $background-medium-dark;
+  margin: auto;
+}
+
+.selectCard {
+  width: calc( 100% - 40px);
+  height: calc( 100% - 40px);
   padding: 12px;
   color: $primary-text-color;
   background-color: $background-medium-dark;
+}
+
+.selectCard:hover {
+  background: $background-medium-dark-pointer;
+  cursor: pointer;
+}
+
+mat-grid-list {
+  margin-bottom: 20px !important;
 }
 
 mat-card-header {

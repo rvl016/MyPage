@@ -68,7 +68,7 @@ export class Player {
         if (this.gotFood()) {
             this.snakeHead.growing = true;
             this.score += 1;
-            this.parent.score = this.score;
+            this.parent.setScore( this.score);
             this.spawnFood();
             return 1;
         }
@@ -125,6 +125,7 @@ export class Player {
 
     gameover() {
         cancelAnimationFrame( this.requestId);
+        this.parent.gameIsRunning = false;
     }
     loop() {
         if (Date.now() - this.time >= consts.UPDATEINTERVAL) {
@@ -139,7 +140,7 @@ export class Player {
     }
     start() {
         this.score = 0;
-        this.parent.score = this.score;
+        this.parent.setScore( this.score);
         this.spawnFood();
         this.time = Date.now();
         this.loop();

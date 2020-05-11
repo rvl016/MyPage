@@ -12,15 +12,15 @@
   </div>
 </div>
 
-<div fxLayout = "column" fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px" 
-  class = "standardMargin bottonPadding verticalMargin"
+<div fxLayout = "column" fxLayoutGap = "30px" fxLayoutGap.lt-md = "20px" 
+  class = "standardMargin verticalMargin"
 >
   <div fxFlex class = "innerMargin" fxLayout = "column" fxLayoutGap = "50px">
     <mat-grid-list [cols] = "breakpointGridColumns" rowHeight = "200px"
       (window:resize) = "onResize( $event)">
-      <mat-grid-tile *ngFor = "let game of games" 
-        (click) = "selectGame( $event, game.selector)">
-        <mat-card>
+      <mat-grid-tile *ngFor = "let game of games">
+        <mat-card id = "{{ game.selector }}" (click) = "selectGame( $event)"
+          class = "selectCard">
           <mat-card-header>
             <mat-card-title> {{ game.name }} </mat-card-title>
           </mat-card-header>
@@ -30,31 +30,43 @@
     </mat-grid-list>
     <mat-divider class = "standardMatHDivider"></mat-divider>
   </div>
-  <div *ngIf = "selectedGame" fxFlex class = "innerMargin" fxLayout = "column" 
-    fxLayoutGap = "50px">
-    <p class = "title">{{ gameDetail.name }}</p>
-    <app-snake *ngIf = "selectedGame == 'app-snake'"></app-snake>
-    <app-maze-solver *ngIf = "selectedGame == 'app-maze-solver'"></app-maze-solver>
 
+  <div fxFlex class = "innerMargin" fxLayout = "column" 
+    fxLayoutGap = "30px" *ngIf = "selectedGame">
+    <p class = "title">{{ gameDetail.name }}</p>
+    <div fxLayout = "row" fxLayout.md = "column" fxLayoutGap = "30px">
+      <mat-card class = "gameCard">
+        <app-snake *ngIf = "selectedGame == 'app-snake'"></app-snake>
+        <app-maze-solver *ngIf = "selectedGame == 'app-maze-solver'"></app-maze-solver>
+      </mat-card>
+      <div *ngIf = "gameDetail.how2play != null" fxFlex fxLayoutGap = "15px">
+        <div class = "infoTitleContainer ">
+          <div fxFlex><mat-divider class = 
+            "standardMatHDivider matHDividerLeft">
+          </mat-divider></div>
+          <div class = "infoTitle">How to Play</div>
+          <div fxFlex><mat-divider class = 
+            "standardMatHDivider matHDividerRight">
+          </mat-divider></div>
+        </div>
+        <div *ngFor = "let paragraph of gameDetail.how2play" class = "infoText">
+          <p class = "paragraph" [innerHTML] = "paragraph"></p>
+        </div>
+      </div>
+    </div>
+    <div *ngIf = "gameDetail.explanation != null" fxFlex fxLayoutGap = "15px">
+      <div class = "infoTitleContainer ">
+        <div fxFlex><mat-divider class = 
+          "standardMatHDivider matHDividerLeft">
+        </mat-divider></div>
+        <div class = "infoTitle">Explanation</div>
+        <div fxFlex><mat-divider class = 
+          "standardMatHDivider matHDividerRight">
+        </mat-divider></div>
+      </div>
+      <div *ngFor = "let paragraph of gameDetail.explanation" class = "infoText">
+        <p class = "paragraph" [innerHTML] = "paragraph"></p>
+      </div>
+    </div>
   </div>
 </div>
-
-<!-- <div class = "standardMargin bottonPadding verticalMargin">
-  <div *ngFor = "let presentationParagraph of presentation; let i = index"
-    class = "container" fxLayout = "row" fxLayout.lt-md = "column"
-    fxLayoutGap = "50px" fxLayoutGap.lt-md = "20px">
-    <div fxFlex = "75" fxFlex.lt-md = "100" 
-      fxFlexOrder = "{{ i % 2 == 0 ? 1 : 3 }}">
-      {{ presentationParagraph.text }}
-    </div>
-    <mat-divider fxFlexOrder = "2" [vertical] = "true" fxHide.lt-md
-      class = "standardMatVDivider"></mat-divider>
-    <mat-divider fxFlexOrder = "4" fxShow.lt-md
-      class = "standardMatHDivider"></mat-divider>
-    <div fxFlex = "25"  fxFlexAlign = "center center"
-      fxFlexOrder = "{{ i % 2 == 0 ? 3 : 1 }}" fxHide.lt-md>
-      <img class = "imgScaleDown" 
-        src = "{{ presentationParagraph.image }}">
-    </div>
-  </div>
-</div> -->

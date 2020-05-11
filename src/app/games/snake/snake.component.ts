@@ -54,10 +54,13 @@ export class SnakeComponent implements OnInit {
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
-/*     this.initBoard(); */
+    this.score = 0;
+    this.highscore = 0;
   }
 
-  initBoard() {
+  setScore( score) : void {
+    this.highscore = score > this.highscore ? score : this.highscore;
+    this.score = score;
   }
 
   getInitBoard() : number[][] {

@@ -5,6 +5,7 @@ import { Presentation, Tech } from '../share/profileDataType';
 import { BrickService } from '../services/brick.service';
 import { FeaturedProjectsService } from '../services/featured-projects.service';
 import { ProfileService } from '../services/profile.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-home-component',
@@ -19,10 +20,13 @@ export class HomeComponentComponent implements OnInit {
   progLanguages : Tech[];
   otherLanguages : Tech[];
   framewordsNOtherTech : Tech[];
+  baseUrl : string;
 
   constructor( private brickService : BrickService,
     private featuredProjectService : FeaturedProjectsService,
-    private profileService : ProfileService) { }
+    private profileService : ProfileService) { 
+    this.baseUrl = environment.baseUrl;
+  }
 
   ngOnInit(): void {
     this.presentation = this.profileService.getPresentation();

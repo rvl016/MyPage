@@ -19,11 +19,12 @@ export class GamesComponent implements OnInit {
     private route : ActivatedRoute) {
     this.games = null;
     this.route.queryParamMap.subscribe( params => {
-      this.selectedGame = params.get( "selectedGame");
+      this.selectedGame = params.get( "selected");
     });
   }
 
   ngOnInit() : void {
+    console.log( this.selectedGame)
     this.games = this.gameService.getGames();
     this.breakpointGridColumns = this.getColsNumber( window.innerWidth);
     this.getGameInfo();
@@ -32,23 +33,26 @@ export class GamesComponent implements OnInit {
   getGameInfo() : void {
     if (! this.selectedGame) return;
     this.gameDetail = this.games.filter( 
-      game => game.selector = this.selectedGame)[0];
+      game => game.selector == this.selectedGame)[0];
   }
 
   onResize( event : any) : void {
     this.breakpointGridColumns = this.getColsNumber( event.target.innerWidth);
   }
 
-  selectGame( event : any, selector : String) : void {
-    console.log( selector)
-    const newParam : Params = { selectedGame: selector };
-    this.router.navigate(
+
+  async selectGame( event : any) : Promise<void> {
+    console.log(event)
+    console.log(event.currentTarget.id)
+    const newParam : Params = { selected: event.currentTarget.id };
+    await this.router.navigate(
       [],
       {
         relativeTo: this.route,
         queryParams: newParam
       }
     );
+    this.getGameInfo();
   }
 
   getColsNumber( innerWidth : number) : number {
