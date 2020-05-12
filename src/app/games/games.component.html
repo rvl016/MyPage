@@ -34,7 +34,7 @@
   <div fxFlex class = "innerMargin" fxLayout = "column" 
     fxLayoutGap = "30px" *ngIf = "selectedGame">
     <p class = "title">{{ gameDetail.name }}</p>
-    <div fxLayout = "row" fxLayout.md = "column" fxLayoutGap = "30px">
+    <div fxLayout = "row" fxLayout.lt-lg = "column" fxLayoutGap = "30px">
       <mat-card class = "gameCard">
         <app-snake *ngIf = "selectedGame == 'app-snake'"></app-snake>
         <app-maze-solver *ngIf = "selectedGame == 'app-maze-solver'"></app-maze-solver>

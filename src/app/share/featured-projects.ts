@@ -33,6 +33,6 @@ export const FEATUREDPROJECTS : FeaturedProject[] = [
         usedTechs : ["TypeScript", "PIXI.js"],
         tryItLink : "/games?selected=app-maze-solver",
         label : 'mazeBoomerApp',
-        description : "This sort of game involves building a maze with a choosen algorithm and then solve a path between two choosen cells with a choosen algorithm. When solving a path, the user can place and remove barriers in unexplored areas of the maze, affecting the solver's path."
+        description : "This sort of game involves building a maze with a chosen algorithm and then solve a path between two chosen cells with a chosen algorithm. When solving a path, the user can place and remove barriers in unexplored areas of the maze, affecting the solver's path."
     },
 ];
