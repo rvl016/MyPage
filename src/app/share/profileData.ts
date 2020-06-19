@@ -103,11 +103,16 @@ export const FRAMEWORKS_N_OTHER_TECH : Tech[] = [
   },
   {
     id: 4,
+    title: "Django",
+    image: environment.baseUrl + "/assets/images/Django.png"
+  },
+  {
+    id: 5,
     title: "Pandas",
     image: environment.baseUrl + "/assets/images/Pandas.png"
   },
   {
-    id: 5,
+    id: 6,
     title: "Linux",
     image: environment.baseUrl + "/assets/images/ArchLinux.png"
   }
