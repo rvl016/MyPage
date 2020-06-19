@@ -17,7 +17,7 @@
   <div class = "innerMargin" fxLayout.xs = "column" fxLayout = "row wrap" 
     fxLayoutGap = "20px" ngClass.gt-xs = "ml-10">
     <ng-template ngFor let-project [ngForOf] = "projects" let-i = "index">
-      <div fxFlex.gt-xs = "0 1 calc( 50% - 20px)">
+      <div fxFlex.gt-xs = "0 1 calc( 50% - 20px)" class = "projectCard">
         <mat-card fxLayout = "column">
           <mat-card-header>
             <mat-card-title class = "projectTitle">
@@ -38,14 +38,14 @@
             </div>
           </mat-card-content>
           <div class = "cardContainer" fxLayout = "row">
-            <a mat-raised-button href = "{{ project.ghLink }}" target = "_blank">
+            <a mat-raised-button *ngIf = "project.ghLink" href = "{{ project.ghLink }}" target = "_blank">
               GitHub Page
             </a>
             <div fxFlex></div>
-            <button mat-raised-button *ngIf = "project.tryItLink" 
+            <a mat-raised-button *ngIf = "project.tryItLink" 
               (click) = "tryProject( project.tryItLink)">
               Try it!
-            </button>
+            </a>
           </div>
         </mat-card>
       </div>

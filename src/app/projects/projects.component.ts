@@ -29,7 +29,10 @@ export class ProjectsComponent implements OnInit {
   }
 
   tryProject( route : string) : void {
-    this.router.navigateByUrl( route);
+    if (route.match( 'https://')) 
+      window.open( route, '_blank');
+    else
+      this.router.navigateByUrl( route);
   }
 
   getColsNumber( innerWidth : number) : number {
